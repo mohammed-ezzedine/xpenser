@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: xpenser
+
+axoniq:
+  console:
+    application-name: XPenser
+    credentials: 01498322-0:5aa7a44016304205bf7c2e24b087bc7c
+    dlq-mode: NONE

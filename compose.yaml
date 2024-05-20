@@ -1,0 +1,6 @@
+services:
+  axon-server:
+    image: axoniq/axonserver:2024.0.2-jdk-17
+    ports:
+      - 8024:8024
+      - 8124:8124
