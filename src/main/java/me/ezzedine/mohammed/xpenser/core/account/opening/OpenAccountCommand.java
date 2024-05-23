@@ -1,6 +1,9 @@
-package me.ezzedine.mohammed.xpenser.account;
+package me.ezzedine.mohammed.xpenser.core.account.opening;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.annotation.Nonnull;
 

@@ -1,12 +1,12 @@
-package me.ezzedine.mohammed.xpenser.account;
+package me.ezzedine.mohammed.xpenser.core.account;
 
+import me.ezzedine.mohammed.xpenser.core.account.opening.AccountOpenedEvent;
+import me.ezzedine.mohammed.xpenser.core.account.opening.OpenAccountCommand;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class AccountAggregateTest {
 

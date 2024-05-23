@@ -1,4 +1,4 @@
-package me.ezzedine.mohammed.xpenser.account;
+package me.ezzedine.mohammed.xpenser.core.account.opening;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
