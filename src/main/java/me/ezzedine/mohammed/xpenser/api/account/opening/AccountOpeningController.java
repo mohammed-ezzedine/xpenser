@@ -15,7 +15,7 @@ import java.time.Duration;
 
 @Slf4j
 @RestController
-@RequestMapping("account/open")
+@RequestMapping("accounts/open")
 @RequiredArgsConstructor
 public class AccountOpeningController {
 

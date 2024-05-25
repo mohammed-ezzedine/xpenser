@@ -1,7 +1,6 @@
 package me.ezzedine.mohammed.xpenser.api.account.opening;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
+import me.ezzedine.mohammed.xpenser.api.account.ResourceUtils;
 import me.ezzedine.mohammed.xpenser.core.account.opening.AccountIdGenerator;
 import me.ezzedine.mohammed.xpenser.core.account.opening.OpenAccountCommand;
 import org.axonframework.commandhandling.gateway.CommandGateway;
@@ -50,9 +49,9 @@ class AccountOpeningControllerIntegrationTest {
         @DisplayName("it should issue an open account command")
         void it_should_issue_an_open_account_command() {
             client.post()
-                    .uri("/account/open")
+                    .uri("/accounts/open")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(resource("account/api/open_account.request.json"))
+                    .bodyValue(ResourceUtils.resource("account/api/opening/open_account.request.json"))
                     .exchange()
                     .expectStatus()
                     .is2xxSuccessful();
@@ -64,17 +63,13 @@ class AccountOpeningControllerIntegrationTest {
         @DisplayName("it should return the account id")
         void it_should_return_the_account_id() {
             client.post()
-                    .uri("/account/open")
+                    .uri("/accounts/open")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(resource("account/api/open_account.request.json"))
+                    .bodyValue(ResourceUtils.resource("account/api/opening/open_account.request.json"))
                     .exchange()
                     .expectBody()
-                    .json(resource("account/api/open_account.response.json").toString());
+                    .json(ResourceUtils.resource("account/api/opening/open_account.response.json").toString());
         }
     }
 
-    @SneakyThrows
-    private Object resource(String fileName) {
-        return new ObjectMapper().readValue(AccountOpeningControllerIntegrationTest.class.getClassLoader().getResourceAsStream(fileName), Object.class);
-    }
 }

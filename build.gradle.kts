@@ -27,7 +27,6 @@ dependencies {
     implementation("io.axoniq.console:console-framework-client-spring-boot-starter:1.4.1")
     implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.5.0")
     compileOnly("org.projectlombok:lombok")
-    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.projectlombok:lombok")
