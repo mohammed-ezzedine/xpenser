@@ -63,7 +63,7 @@ class AccountQueryControllerIntegrationTest {
                     .uri("/accounts")
                     .exchange()
                     .expectBody()
-                    .json(ResourceUtils.resource("account/api/query/account_summaries.response.json").toString());
+                    .json(ResourceUtils.resourceAsString("account/api/query/account_summaries.response.json").toString());
         }
     }
 }

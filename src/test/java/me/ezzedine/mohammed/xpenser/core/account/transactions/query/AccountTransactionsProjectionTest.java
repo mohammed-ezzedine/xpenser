@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,21 +27,25 @@ class AccountTransactionsProjectionTest {
     @Test
     @DisplayName("it should save a transaction when an account is opened")
     void it_should_save_a_transaction_when_an_account_is_opened() {
-        projection.on(new AccountOpenedEvent("account-id", UUID.randomUUID().toString(), new Budget(mock(Currency.class), 10)));
+        Date timestamp = mock(Date.class);
+        projection.on(new AccountOpenedEvent("account-id", UUID.randomUUID().toString(), new Budget(mock(Currency.class), 10), timestamp));
         List<TransactionSummary> transactions = projection.handle(new FetchAccountTransactionsQuery("account-id"));
         assertEquals(1, transactions.size());
         assertEquals(10, transactions.getFirst().amount());
         assertEquals(10, transactions.getFirst().balance());
+        assertEquals(timestamp, transactions.getFirst().timestamp());
     }
 
     @Test
     @DisplayName("it should save a transaction when money is deposited into an account")
     void it_should_save_a_transaction_when_money_is_deposited_into_an_account() {
-        projection.on(new AccountOpenedEvent("account-id", UUID.randomUUID().toString(), new Budget(mock(Currency.class), 10)));
-        projection.on(new MoneyDepositedInAccountEvent("account-id", 5.3));
+        projection.on(new AccountOpenedEvent("account-id", UUID.randomUUID().toString(), new Budget(mock(Currency.class), 10), mock(Date.class)));
+        Date timestamp = mock(Date.class);
+        projection.on(new MoneyDepositedInAccountEvent("account-id", 5.3, timestamp));
         List<TransactionSummary> transactions = projection.handle(new FetchAccountTransactionsQuery("account-id"));
         assertEquals(2, transactions.size());
-        assertEquals(5.3, transactions.getLast().amount());
-        assertEquals(15.3, transactions.getLast().balance());
+        assertEquals(5.3, transactions.getFirst().amount());
+        assertEquals(15.3, transactions.getFirst().balance());
+        assertEquals(timestamp, transactions.getFirst().timestamp());
     }
 }

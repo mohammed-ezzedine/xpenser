@@ -36,7 +36,8 @@ public class AccountAggregate {
                 Budget.builder()
                         .currency(Currencies.fromCode(command.getCurrencyCode()))
                         .amount(command.getBudgetInitialAmount())
-                        .build()
+                        .build(),
+                command.getTimestamp()
         );
         apply(event);
     }
@@ -54,7 +55,7 @@ public class AccountAggregate {
             throw new IllegalArgumentException("Amount should be greater than zero.");
         }
 
-        apply(new MoneyDepositedInAccountEvent(command.accountId(), command.amount()));
+        apply(new MoneyDepositedInAccountEvent(command.accountId(), command.amount(), command.timestamp()));
     }
 
     @EventSourcingHandler

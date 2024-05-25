@@ -20,14 +20,15 @@ public class AccountTransactionsProjection {
 
     @EventHandler
     public void on(AccountOpenedEvent event) {
-        accountsTransactions.put(event.id(), List.of(new TransactionSummary(event.budget().getAmount(), event.budget().getAmount())));
+        accountsTransactions.put(event.id(), List.of(new TransactionSummary(event.budget().getAmount(), event.budget().getAmount(), event.timestamp())));
     }
 
     @EventHandler
     public void on(MoneyDepositedInAccountEvent event) {
         List<TransactionSummary> transactionSummaries = accountsTransactions.get(event.accountId());
-        ArrayList<TransactionSummary> updatedTransactions = new ArrayList<>(transactionSummaries);
-        updatedTransactions.add(new TransactionSummary(event.amount(), transactionSummaries.getLast().amount() + event.amount()));
+        ArrayList<TransactionSummary> updatedTransactions = new ArrayList<>();
+        updatedTransactions.add(new TransactionSummary(event.amount(), transactionSummaries.getFirst().balance() + event.amount(), event.timestamp()));
+        updatedTransactions.addAll(transactionSummaries);
         accountsTransactions.put(event.accountId(), updatedTransactions);
     }
 

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.annotation.Nonnull;
+import java.util.Date;
 
 @Data
 @Builder
@@ -19,4 +20,6 @@ public class OpenAccountCommand {
     @Nonnull
     private String currencyCode;
     private double budgetInitialAmount;
+    @Nonnull
+    private Date timestamp;
 }

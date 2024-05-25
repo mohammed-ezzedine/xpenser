@@ -3,6 +3,7 @@ package me.ezzedine.mohammed.xpenser.api.account.opening;
 import me.ezzedine.mohammed.xpenser.api.account.ResourceUtils;
 import me.ezzedine.mohammed.xpenser.core.account.opening.AccountIdGenerator;
 import me.ezzedine.mohammed.xpenser.core.account.opening.OpenAccountCommand;
+import me.ezzedine.mohammed.xpenser.core.account.transactions.DateFactory;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,11 +16,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @WebFluxTest(AccountOpeningController.class)
 class AccountOpeningControllerIntegrationTest {
@@ -33,12 +34,19 @@ class AccountOpeningControllerIntegrationTest {
     private AccountIdGenerator idGenerator;
 
     @MockBean
+    private DateFactory dateFactory;
+
+    @MockBean
     private CommandGateway commandGateway;
+
+    private Date currentDate;
 
     @BeforeEach
     void setUp() {
         when(commandGateway.send(any())).thenReturn(CompletableFuture.completedFuture(new Object()));
         when(idGenerator.generate()).thenReturn(Mono.just(ACCOUNT_ID));
+        currentDate = mock(Date.class);
+        when(dateFactory.now()).thenReturn(currentDate);
     }
 
     @Nested
@@ -51,12 +59,17 @@ class AccountOpeningControllerIntegrationTest {
             client.post()
                     .uri("/accounts/open")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(ResourceUtils.resource("account/api/opening/open_account.request.json"))
+                    .bodyValue(ResourceUtils.resourceAsString("account/api/opening/open_account.request.json"))
                     .exchange()
                     .expectStatus()
                     .is2xxSuccessful();
 
-            verify(commandGateway).send(OpenAccountCommand.builder().name("account-name").id(ACCOUNT_ID).currencyCode("currency-code").budgetInitialAmount(81.0).build());
+            verify(commandGateway).send(OpenAccountCommand.builder()
+                    .name("account-name")
+                    .id(ACCOUNT_ID)
+                    .currencyCode("currency-code")
+                    .budgetInitialAmount(81.0)
+                    .timestamp(currentDate).build());
         }
 
         @Test
@@ -65,10 +78,10 @@ class AccountOpeningControllerIntegrationTest {
             client.post()
                     .uri("/accounts/open")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(ResourceUtils.resource("account/api/opening/open_account.request.json"))
+                    .bodyValue(ResourceUtils.resourceAsString("account/api/opening/open_account.request.json"))
                     .exchange()
                     .expectBody()
-                    .json(ResourceUtils.resource("account/api/opening/open_account.response.json").toString());
+                    .json(ResourceUtils.resourceAsString("account/api/opening/open_account.response.json").toString());
         }
     }
 

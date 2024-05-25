@@ -1,6 +1,7 @@
 package me.ezzedine.mohammed.xpenser.api.account.transactions;
 
 import me.ezzedine.mohammed.xpenser.api.account.ResourceUtils;
+import me.ezzedine.mohammed.xpenser.core.account.transactions.DateFactory;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.DepositMoneyCommand;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,11 +14,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @WebFluxTest(AccountTransactionsController.class)
 class AccountTransactionsControllerIntegrationTest {
@@ -27,6 +28,16 @@ class AccountTransactionsControllerIntegrationTest {
 
     @MockBean
     private CommandGateway commandGateway;
+
+    @MockBean
+    private DateFactory dateFactory;
+    private Date currentDate;
+
+    @BeforeEach
+    void setUp() {
+        currentDate = mock(Date.class);
+        when(dateFactory.now()).thenReturn(currentDate);
+    }
 
     @Nested
     @DisplayName("When the user deposits money in an account")
@@ -43,12 +54,12 @@ class AccountTransactionsControllerIntegrationTest {
             testClient.post()
                     .uri("/accounts/account-id/transactions/deposit")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(ResourceUtils.resource("account/api/transactions/deposit_money.request.json"))
+                    .bodyValue(ResourceUtils.resourceAsString("account/api/transactions/deposit_money.request.json"))
                     .exchange()
                     .expectStatus()
                     .is2xxSuccessful();
 
-            verify(commandGateway).send(new DepositMoneyCommand("account-id", 10));
+            verify(commandGateway).send(new DepositMoneyCommand("account-id", 10, currentDate));
         }
     }
 }

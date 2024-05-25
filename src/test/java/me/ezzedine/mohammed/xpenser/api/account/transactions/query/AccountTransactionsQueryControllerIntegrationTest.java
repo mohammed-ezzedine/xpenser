@@ -15,6 +15,8 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -37,7 +39,8 @@ class AccountTransactionsQueryControllerIntegrationTest {
 
         @BeforeEach
         void setUp() {
-            when(queryGateway.query(any(), any(ResponseType.class))).thenReturn(CompletableFuture.completedFuture(List.of(new TransactionSummary(14, 20))));
+            when(queryGateway.query(any(), any(ResponseType.class))).thenReturn(CompletableFuture.completedFuture(List.of(
+                    new TransactionSummary(14, 20, Date.from(Instant.parse("2024-05-25T16:04:47.073Z"))))));
         }
 
         @Test
@@ -59,7 +62,7 @@ class AccountTransactionsQueryControllerIntegrationTest {
                     .expectStatus()
                     .is2xxSuccessful()
                     .expectBody()
-                    .json(ResourceUtils.resource("account/api/transactions/query/account_transactions.response.json").toString());
+                    .json(ResourceUtils.resourceAsString("account/api/transactions/query/account_transactions.response.json"));
         }
     }
 
