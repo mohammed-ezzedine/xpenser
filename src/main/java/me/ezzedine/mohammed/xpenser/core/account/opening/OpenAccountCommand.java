@@ -16,4 +16,7 @@ public class OpenAccountCommand {
     private String id;
     @Nonnull
     private String name;
+    @Nonnull
+    private String currencyCode;
+    private double budgetInitialAmount;
 }

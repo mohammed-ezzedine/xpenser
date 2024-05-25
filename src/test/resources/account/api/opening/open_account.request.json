@@ -1,3 +1,5 @@
 {
-  "name": "account-name"
+  "name": "account-name",
+  "currency": "currency-code",
+  "initialAmount": 81.0
 }

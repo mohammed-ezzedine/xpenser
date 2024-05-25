@@ -1,6 +1,14 @@
 [
   {
     "id": "account-id",
-    "name": "account-name"
+    "name": "account-name",
+    "budget": {
+      "currency": {
+        "code": "currency-code",
+        "symbol": "currency-symbol",
+        "name": "currency-name"
+      },
+      "amount": 14.5
+    }
   }
 ]

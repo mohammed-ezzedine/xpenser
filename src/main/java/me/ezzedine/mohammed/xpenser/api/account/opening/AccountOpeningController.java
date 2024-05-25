@@ -27,7 +27,7 @@ public class AccountOpeningController {
         log.info("Received a request to open a new account {}", request);
 
         return idGenerator.generate()
-                .map(id -> OpenAccountCommand.builder().id(id).name(request.name()).build())
+                .map(id -> OpenAccountCommand.builder().id(id).name(request.name()).currencyCode(request.currency()).budgetInitialAmount(request.initialAmount()).build())
                 .doOnNext(commandGateway::send)
                 .map(command -> new AccountIdentificationApiResponse(command.getId()))
                 .onErrorStop()

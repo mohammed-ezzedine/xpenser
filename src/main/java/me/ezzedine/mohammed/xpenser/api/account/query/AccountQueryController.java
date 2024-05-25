@@ -19,9 +19,8 @@ public class AccountQueryController {
     private final QueryGateway queryGateway;
 
     @GetMapping
-    public Flux<AccountSummaryApiModel> fetchAccountSummaries() {
+    public Flux<AccountSummary> fetchAccountSummaries() {
         return Mono.fromFuture(queryGateway.query(new FetchAccountSummariesQuery(), ResponseTypes.multipleInstancesOf(AccountSummary.class)))
-                .flatMapMany(i -> Flux.fromStream(i.stream()))
-                .map(a -> new AccountSummaryApiModel(a.getId(), a.getName()));
+                .flatMapMany(i -> Flux.fromStream(i.stream()));
     }
 }

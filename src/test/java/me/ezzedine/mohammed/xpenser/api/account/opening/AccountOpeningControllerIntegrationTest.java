@@ -56,7 +56,7 @@ class AccountOpeningControllerIntegrationTest {
                     .expectStatus()
                     .is2xxSuccessful();
 
-            verify(commandGateway).send(OpenAccountCommand.builder().name("account-name").id(ACCOUNT_ID).build());
+            verify(commandGateway).send(OpenAccountCommand.builder().name("account-name").id(ACCOUNT_ID).currencyCode("currency-code").budgetInitialAmount(81.0).build());
         }
 
         @Test

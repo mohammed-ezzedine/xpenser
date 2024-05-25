@@ -20,7 +20,7 @@ public class AccountSummaryProjection {
 
     @EventHandler
     public void on(AccountOpenedEvent event) {
-        accountSummaries.put(event.getId(), new AccountSummary(event.getId(), event.getName()));
+        accountSummaries.put(event.id(), new AccountSummary(event.id(), event.name(), BudgetSummary.from(event.budget())));
 
         queryUpdateEmitter.emit(FetchAccountSummariesQuery.class, queryUpdateEmitter -> true, accountSummaries.values().stream().toList());
     }

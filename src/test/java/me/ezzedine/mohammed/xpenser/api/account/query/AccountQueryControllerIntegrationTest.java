@@ -2,6 +2,8 @@ package me.ezzedine.mohammed.xpenser.api.account.query;
 
 import me.ezzedine.mohammed.xpenser.api.account.ResourceUtils;
 import me.ezzedine.mohammed.xpenser.core.account.query.AccountSummary;
+import me.ezzedine.mohammed.xpenser.core.account.query.BudgetSummary;
+import me.ezzedine.mohammed.xpenser.core.account.query.Currency;
 import me.ezzedine.mohammed.xpenser.core.account.query.FetchAccountSummariesQuery;
 import org.axonframework.messaging.responsetypes.ResponseType;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
@@ -37,7 +39,7 @@ class AccountQueryControllerIntegrationTest {
 
         @BeforeEach
         void setUp() {
-            AccountSummary accountSummary = AccountSummary.builder().id("account-id").name("account-name").build();
+            AccountSummary accountSummary = new AccountSummary("account-id", "account-name", new BudgetSummary(new Currency("currency-code", "currency-symbol", "currency-name"), 14.5));
             when(queryGateway.query(any(), any(ResponseType.class))).thenReturn(CompletableFuture.completedFuture(List.of(accountSummary)));
         }
 
