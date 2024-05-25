@@ -4,6 +4,7 @@ import me.ezzedine.mohammed.xpenser.core.account.budget.Budget;
 import me.ezzedine.mohammed.xpenser.core.account.budget.Currencies;
 import me.ezzedine.mohammed.xpenser.core.account.budget.CurrencyCode;
 import me.ezzedine.mohammed.xpenser.core.account.opening.AccountOpenedEvent;
+import me.ezzedine.mohammed.xpenser.core.account.transactions.MoneyDepositedInAccountEvent;
 import org.axonframework.queryhandling.QueryUpdateEmitter;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +34,7 @@ class AccountSummaryProjectionTest {
     @Test
     @DisplayName("it should update the fetch account summaries query when an account opened event is issued")
     void it_should_update_the_fetch_account_summaries_query_when_an_account_opened_event_is_issued() {
-        double budgetAmount = new Random().nextDouble();
+        double budgetAmount = new Random().nextInt();
         projection.on(getAccountOpenedEvent(budgetAmount));
 
         AccountSummary accountSummary = getAccountSummary(budgetAmount);
@@ -43,9 +44,19 @@ class AccountSummaryProjectionTest {
     @Test
     @DisplayName("it should return the account summaries when the fetch account summaries query is issued")
     void it_should_return_the_account_summaries_when_the_fetch_account_summaries_query_is_issued() {
-        double budgetAmount = new Random().nextDouble();
+        double budgetAmount = new Random().nextInt();
         projection.on(getAccountOpenedEvent(budgetAmount));
         assertEquals(List.of(getAccountSummary(budgetAmount)), projection.handle(new FetchAccountSummariesQuery()));
+    }
+
+    @Test
+    @DisplayName("it should update the fetch account summaries query when an account budget updated event is issued")
+    void it_should_update_the_fetch_account_summaries_query_when_an_account_budget_updated_event_is_issued() {
+        projection.on(getAccountOpenedEvent(5));
+        projection.on(new MoneyDepositedInAccountEvent("id", 10));
+
+        AccountSummary accountSummary = getAccountSummary(15);
+        verify(queryUpdateEmitter).emit(eq(FetchAccountSummariesQuery.class), any(), eq(List.of(accountSummary)));
     }
 
     @NotNull
@@ -56,7 +67,11 @@ class AccountSummaryProjectionTest {
 
     @NotNull
     private static AccountOpenedEvent getAccountOpenedEvent(double budgetAmount) {
-        Budget budget = Budget.builder().amount(budgetAmount).currency(Currencies.euro()).build();
+        Budget budget = getBudget(budgetAmount);
         return new AccountOpenedEvent("id", "name", budget);
+    }
+
+    private static Budget getBudget(double budgetAmount) {
+        return Budget.builder().amount(budgetAmount).currency(Currencies.euro()).build();
     }
 }
