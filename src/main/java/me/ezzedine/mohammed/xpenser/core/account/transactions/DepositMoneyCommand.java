@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public record DepositMoneyCommand(
+        @Nonnull String transactionId,
         @TargetAggregateIdentifier
         @Nonnull String accountId,
         @Nonnull BigDecimal amount,

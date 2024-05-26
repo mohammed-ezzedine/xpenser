@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -56,7 +57,7 @@ class AccountSummaryProjectionTest {
     @DisplayName("it should update the fetch account summaries query when a money deposited into account event is issued")
     void it_should_update_the_fetch_account_summaries_query_when_a_money_deposited_into_account_event_is_issued() {
         projection.on(getAccountOpenedEvent(5));
-        projection.on(new MoneyDepositedInAccountEvent("id", BigDecimal.valueOf(10), "", mock(Date.class)));
+        projection.on(new MoneyDepositedInAccountEvent(UUID.randomUUID().toString(), "id", BigDecimal.valueOf(10), "", mock(Date.class)));
 
         AccountSummary accountSummary = getAccountSummary(15);
         verify(queryUpdateEmitter).emit(eq(FetchAccountSummariesQuery.class), any(), eq(List.of(accountSummary)));
@@ -66,7 +67,7 @@ class AccountSummaryProjectionTest {
     @DisplayName("it should update the fetch account summaries query when a money withdrew from account event is issued")
     void it_should_update_the_fetch_account_summaries_query_when_a_money_withdrew_from_account_event_is_issued() {
         projection.on(getAccountOpenedEvent(5));
-        projection.on(new MoneyWithdrewFromAccountEvent("id", BigDecimal.valueOf(3), "", mock(Date.class)));
+        projection.on(new MoneyWithdrewFromAccountEvent("", "id", BigDecimal.valueOf(3), "", mock(Date.class)));
 
         AccountSummary accountSummary = getAccountSummary(2);
         verify(queryUpdateEmitter).emit(eq(FetchAccountSummariesQuery.class), any(), eq(List.of(accountSummary)));

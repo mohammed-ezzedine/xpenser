@@ -44,7 +44,7 @@ class AccountTransactionsProjectionTest {
     void it_should_save_a_transaction_when_money_is_deposited_into_an_account() {
         projection.on(new AccountOpenedEvent("account-id", UUID.randomUUID().toString(), new Budget(mock(Currency.class), BigDecimal.valueOf(10)), mock(Date.class)));
         Date timestamp = mock(Date.class);
-        projection.on(new MoneyDepositedInAccountEvent("account-id", BigDecimal.valueOf(5.3), "note", timestamp));
+        projection.on(new MoneyDepositedInAccountEvent(UUID.randomUUID().toString(), "account-id", BigDecimal.valueOf(5.3), "note", timestamp));
         List<TransactionSummary> transactions = projection.handle(new FetchAccountTransactionsQuery("account-id"));
         assertEquals(2, transactions.size());
         assertEquals(BigDecimal.valueOf(5.3), transactions.getFirst().amount());
@@ -58,7 +58,7 @@ class AccountTransactionsProjectionTest {
     void it_should_save_a_transaction_when_money_is_withdrew_from_an_account() {
         projection.on(new AccountOpenedEvent("account-id", UUID.randomUUID().toString(), new Budget(mock(Currency.class), BigDecimal.valueOf(10)), mock(Date.class)));
         Date timestamp = mock(Date.class);
-        projection.on(new MoneyWithdrewFromAccountEvent("account-id", BigDecimal.valueOf(5.3), "note", timestamp));
+        projection.on(new MoneyWithdrewFromAccountEvent("", "account-id", BigDecimal.valueOf(5.3), "note", timestamp));
         List<TransactionSummary> transactions = projection.handle(new FetchAccountTransactionsQuery("account-id"));
         assertEquals(2, transactions.size());
         assertEquals(BigDecimal.valueOf(5.3), transactions.getFirst().amount());

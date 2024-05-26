@@ -5,4 +5,4 @@ services:
       - 8024:8024
       - 8124:8124
     environment:
-      - AXONIQ_AXONSERVER_DEVMODE_ENABLE=true
+      - AXONIQ_AXONSERVER_DEVMODE_ENABLED=true

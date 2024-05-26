@@ -10,6 +10,6 @@ class AccountIdGeneratorTest {
     @Test
     @DisplayName("generates a non nullable id")
     void generates_a_non_nullable_id() {
-        assertNotNull(new AccountIdGenerator().generate());
+        assertNotNull(new AccountIdGenerator().generate().block());
     }
 }

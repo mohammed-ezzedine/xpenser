@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public record MoneyWithdrewFromAccountEvent(
+        @Nonnull String transactionId,
         @Nonnull String accountId,
         @Nonnull BigDecimal amount,
         @Nonnull String note,
