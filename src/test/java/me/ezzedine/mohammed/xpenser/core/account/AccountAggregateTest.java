@@ -36,9 +36,17 @@ class AccountAggregateTest {
     }
 
     @Test
+    @DisplayName("it should throw an error upon receiving an open account command with a negative initial budget")
+    void it_should_throw_an_error_upon_receiving_an_open_account_command_with_a_negative_initial_budget() {
+        testFixture.givenNoPriorActivity()
+                .when(new OpenAccountCommand(ACCOUNT_ID, ACCOUNT_NAME, CurrencyCode.LEBANESE_LIRA.getValue(), -3, timestamp))
+                .expectException(IllegalArgumentException.class);
+    }
+
+    @Test
     @DisplayName("it should publish an account opened event upon receiving an open account command")
     void it_should_publish_an_account_opened_event_upon_receiving_an_open_account_command() {
-        double budgetInitialAmount = new Random().nextDouble();
+        double budgetInitialAmount = 10;
         testFixture.givenNoPriorActivity()
                 .when(OpenAccountCommand.builder().name(ACCOUNT_NAME).id(ACCOUNT_ID).currencyCode(CurrencyCode.DOLLAR.getValue()).budgetInitialAmount(budgetInitialAmount).timestamp(timestamp).build())
                 .expectSuccessfulHandlerExecution()

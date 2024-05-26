@@ -37,7 +37,7 @@ public class AccountOpeningController {
                         .timestamp(dateFactory.now())
                         .build())
                 .doOnNext(commandGateway::send)
-                .map(command -> new AccountIdentificationApiResponse(command.getId()))
+                .map(command -> new AccountIdentificationApiResponse(command.id()))
                 .onErrorStop()
                 .timeout(Duration.ofSeconds(5));
     }

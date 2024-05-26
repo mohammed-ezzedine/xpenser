@@ -29,15 +29,18 @@ public class AccountAggregate {
 
     @CommandHandler
     public AccountAggregate(OpenAccountCommand command) {
-        log.info("A new account opened.");
+        if (command.budgetInitialAmount() < 0) {
+            throw new IllegalArgumentException("Amount cannot be negative.");
+        }
+
         AccountOpenedEvent event = new AccountOpenedEvent(
-                command.getId(),
-                command.getName(),
+                command.id(),
+                command.name(),
                 Budget.builder()
-                        .currency(Currencies.fromCode(command.getCurrencyCode()))
-                        .amount(command.getBudgetInitialAmount())
+                        .currency(Currencies.fromCode(command.currencyCode()))
+                        .amount(command.budgetInitialAmount())
                         .build(),
-                command.getTimestamp()
+                command.timestamp()
         );
         apply(event);
     }
