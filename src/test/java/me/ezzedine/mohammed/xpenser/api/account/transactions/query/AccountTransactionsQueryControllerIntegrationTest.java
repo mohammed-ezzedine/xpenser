@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -40,7 +41,7 @@ class AccountTransactionsQueryControllerIntegrationTest {
         @BeforeEach
         void setUp() {
             when(queryGateway.query(any(), any(ResponseType.class))).thenReturn(CompletableFuture.completedFuture(List.of(
-                    new TransactionSummary(14, 20, "transaction-summary", Date.from(Instant.parse("2024-05-25T16:04:47.073Z"))))));
+                    new TransactionSummary(BigDecimal.valueOf(14.3), BigDecimal.valueOf(20.3), "transaction-summary", Date.from(Instant.parse("2024-05-25T16:04:47.073Z"))))));
         }
 
         @Test

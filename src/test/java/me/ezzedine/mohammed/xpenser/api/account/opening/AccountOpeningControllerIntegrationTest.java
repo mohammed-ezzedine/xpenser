@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 
@@ -68,7 +69,7 @@ class AccountOpeningControllerIntegrationTest {
                     .name("account-name")
                     .id(ACCOUNT_ID)
                     .currencyCode("currency-code")
-                    .budgetInitialAmount(81.0)
+                    .budgetInitialAmount(BigDecimal.valueOf(81.0))
                     .timestamp(currentDate).build());
         }
 

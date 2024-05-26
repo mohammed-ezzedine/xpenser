@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 
@@ -51,7 +52,7 @@ class AccountTransactionsControllerIntegrationTest {
                 .expectStatus()
                 .is2xxSuccessful();
 
-        verify(commandGateway).send(new DepositMoneyCommand("account-id", 10, "message", currentDate));
+        verify(commandGateway).send(new DepositMoneyCommand("account-id", BigDecimal.valueOf(10), "message", currentDate));
     }
 
     @Test
@@ -65,7 +66,7 @@ class AccountTransactionsControllerIntegrationTest {
                 .expectStatus()
                 .is2xxSuccessful();
 
-        verify(commandGateway).send(new WithdrawMoneyCommand("account-id", 10, "message", currentDate));
+        verify(commandGateway).send(new WithdrawMoneyCommand("account-id", BigDecimal.valueOf(10), "message", currentDate));
     }
 
 

@@ -5,15 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Budget {
     private Currency currency;
-    private double amount;
+    private BigDecimal amount;
 
-    public boolean canWithdraw(double amount) {
-        return this.amount >= amount;
+    public boolean canWithdraw(BigDecimal amount) {
+        return this.amount.compareTo(amount) >= 0;
     }
 }

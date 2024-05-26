@@ -1,7 +1,9 @@
 package me.ezzedine.mohammed.xpenser.core.account.query;
 
+import javax.annotation.Nonnull;
+
 public record AccountSummary(
-    String id,
-    String name,
-    BudgetSummary budget
+    @Nonnull String id,
+    @Nonnull String name,
+    @Nonnull BudgetSummary budget
 ) { }

@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -39,7 +40,7 @@ class AccountQueryControllerIntegrationTest {
 
         @BeforeEach
         void setUp() {
-            AccountSummary accountSummary = new AccountSummary("account-id", "account-name", new BudgetSummary(new Currency("currency-code", "currency-symbol", "currency-name"), 14.5));
+            AccountSummary accountSummary = new AccountSummary("account-id", "account-name", new BudgetSummary(new Currency("currency-code", "currency-symbol", "currency-name"), BigDecimal.valueOf(14.5)));
             when(queryGateway.query(any(), any(ResponseType.class))).thenReturn(CompletableFuture.completedFuture(List.of(accountSummary)));
         }
 

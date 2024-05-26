@@ -2,11 +2,12 @@ package me.ezzedine.mohammed.xpenser.core.account.opening;
 
 import me.ezzedine.mohammed.xpenser.core.account.budget.Budget;
 
+import javax.annotation.Nonnull;
 import java.util.Date;
 
 public record AccountOpenedEvent(
-    String id,
-    String name,
-    Budget budget,
-    Date timestamp
+    @Nonnull String id,
+    @Nonnull String name,
+    @Nonnull Budget budget,
+    @Nonnull Date timestamp
 ) { }

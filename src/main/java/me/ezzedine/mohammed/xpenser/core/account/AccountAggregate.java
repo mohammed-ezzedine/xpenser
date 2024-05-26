@@ -16,6 +16,8 @@ import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
 
+import java.math.BigDecimal;
+
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
 @Slf4j
@@ -31,7 +33,7 @@ public class AccountAggregate {
 
     @CommandHandler
     public AccountAggregate(OpenAccountCommand command) {
-        if (command.budgetInitialAmount() < 0) {
+        if (command.budgetInitialAmount().compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("Amount cannot be negative.");
         }
 
@@ -56,7 +58,7 @@ public class AccountAggregate {
 
     @CommandHandler
     public void handle(DepositMoneyCommand command) {
-        if (command.amount() <= 0) {
+        if (command.amount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Amount should be greater than zero.");
         }
 
@@ -65,12 +67,12 @@ public class AccountAggregate {
 
     @EventSourcingHandler
     public void on(MoneyDepositedInAccountEvent event) {
-        this.budget = new Budget(budget.getCurrency(), budget.getAmount() + event.amount());
+        this.budget = new Budget(budget.getCurrency(), budget.getAmount().add(event.amount()));
     }
 
     @CommandHandler
     public void handle(WithdrawMoneyCommand command) {
-        if (command.amount() <= 0) {
+        if (command.amount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Amount should be greater than zero.");
         }
 
@@ -83,6 +85,6 @@ public class AccountAggregate {
 
     @EventSourcingHandler
     public void on(MoneyWithdrewFromAccountEvent event) {
-        this.budget = new Budget(budget.getCurrency(), budget.getAmount() - event.amount());
+        this.budget = new Budget(budget.getCurrency(), budget.getAmount().subtract(event.amount()));
     }
 }

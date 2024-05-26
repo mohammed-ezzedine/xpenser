@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -55,7 +56,7 @@ class AccountSummaryProjectionTest {
     @DisplayName("it should update the fetch account summaries query when a money deposited into account event is issued")
     void it_should_update_the_fetch_account_summaries_query_when_a_money_deposited_into_account_event_is_issued() {
         projection.on(getAccountOpenedEvent(5));
-        projection.on(new MoneyDepositedInAccountEvent("id", 10, "", mock(Date.class)));
+        projection.on(new MoneyDepositedInAccountEvent("id", BigDecimal.valueOf(10), "", mock(Date.class)));
 
         AccountSummary accountSummary = getAccountSummary(15);
         verify(queryUpdateEmitter).emit(eq(FetchAccountSummariesQuery.class), any(), eq(List.of(accountSummary)));
@@ -65,7 +66,7 @@ class AccountSummaryProjectionTest {
     @DisplayName("it should update the fetch account summaries query when a money withdrew from account event is issued")
     void it_should_update_the_fetch_account_summaries_query_when_a_money_withdrew_from_account_event_is_issued() {
         projection.on(getAccountOpenedEvent(5));
-        projection.on(new MoneyWithdrewFromAccountEvent("id", 3, "", mock(Date.class)));
+        projection.on(new MoneyWithdrewFromAccountEvent("id", BigDecimal.valueOf(3), "", mock(Date.class)));
 
         AccountSummary accountSummary = getAccountSummary(2);
         verify(queryUpdateEmitter).emit(eq(FetchAccountSummariesQuery.class), any(), eq(List.of(accountSummary)));
@@ -74,7 +75,7 @@ class AccountSummaryProjectionTest {
     @NotNull
     private static AccountSummary getAccountSummary(double budgetAmount) {
         Currency currency = new Currency(CurrencyCode.EURO.getValue(), Currencies.euro().symbol(), Currencies.euro().name());
-        return new AccountSummary("id", "name", new BudgetSummary(currency, budgetAmount));
+        return new AccountSummary("id", "name", new BudgetSummary(currency, BigDecimal.valueOf(budgetAmount)));
     }
 
     @NotNull
@@ -84,6 +85,6 @@ class AccountSummaryProjectionTest {
     }
 
     private static Budget getBudget(double budgetAmount) {
-        return Budget.builder().amount(budgetAmount).currency(Currencies.euro()).build();
+        return Budget.builder().amount(BigDecimal.valueOf(budgetAmount)).currency(Currencies.euro()).build();
     }
 }
