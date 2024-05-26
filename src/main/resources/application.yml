@@ -12,3 +12,6 @@ axoniq:
 axon:
   serializer:
     general: jackson
+springdoc:
+  swagger-ui:
+    config-url: http://localhost:8080/v3/api-docs

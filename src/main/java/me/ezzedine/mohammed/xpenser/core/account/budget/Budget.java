@@ -12,4 +12,8 @@ import lombok.NoArgsConstructor;
 public class Budget {
     private Currency currency;
     private double amount;
+
+    public boolean canWithdraw(double amount) {
+        return this.amount >= amount;
+    }
 }

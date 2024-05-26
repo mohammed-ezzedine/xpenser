@@ -3,6 +3,7 @@ package me.ezzedine.mohammed.xpenser.core.account.query;
 import lombok.RequiredArgsConstructor;
 import me.ezzedine.mohammed.xpenser.core.account.opening.AccountOpenedEvent;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.MoneyDepositedInAccountEvent;
+import me.ezzedine.mohammed.xpenser.core.account.transactions.MoneyWithdrewFromAccountEvent;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryHandler;
 import org.axonframework.queryhandling.QueryUpdateEmitter;
@@ -29,6 +30,13 @@ public class AccountSummaryProjection {
     public void on(MoneyDepositedInAccountEvent event) {
         AccountSummary accountSummary = accountSummaries.get(event.accountId());
         accountSummaries.put(event.accountId(), new AccountSummary(event.accountId(), accountSummary.name(), new BudgetSummary(accountSummary.budget().currency(), accountSummary.budget().amount() + event.amount())));
+        queryUpdateEmitter.emit(FetchAccountSummariesQuery.class, queryUpdateEmitter -> true, accountSummaries.values().stream().toList());
+    }
+
+    @EventHandler
+    public void on(MoneyWithdrewFromAccountEvent event) {
+        AccountSummary accountSummary = accountSummaries.get(event.accountId());
+        accountSummaries.put(event.accountId(), new AccountSummary(event.accountId(), accountSummary.name(), new BudgetSummary(accountSummary.budget().currency(), accountSummary.budget().amount() - event.amount())));
         queryUpdateEmitter.emit(FetchAccountSummariesQuery.class, queryUpdateEmitter -> true, accountSummaries.values().stream().toList());
     }
 

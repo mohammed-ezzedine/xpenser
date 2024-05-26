@@ -5,6 +5,7 @@ import me.ezzedine.mohammed.xpenser.core.account.budget.Currencies;
 import me.ezzedine.mohammed.xpenser.core.account.budget.CurrencyCode;
 import me.ezzedine.mohammed.xpenser.core.account.opening.AccountOpenedEvent;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.MoneyDepositedInAccountEvent;
+import me.ezzedine.mohammed.xpenser.core.account.transactions.MoneyWithdrewFromAccountEvent;
 import org.axonframework.queryhandling.QueryUpdateEmitter;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,12 +52,22 @@ class AccountSummaryProjectionTest {
     }
 
     @Test
-    @DisplayName("it should update the fetch account summaries query when an account budget updated event is issued")
-    void it_should_update_the_fetch_account_summaries_query_when_an_account_budget_updated_event_is_issued() {
+    @DisplayName("it should update the fetch account summaries query when a money deposited into account event is issued")
+    void it_should_update_the_fetch_account_summaries_query_when_a_money_deposited_into_account_event_is_issued() {
         projection.on(getAccountOpenedEvent(5));
         projection.on(new MoneyDepositedInAccountEvent("id", 10, "", mock(Date.class)));
 
         AccountSummary accountSummary = getAccountSummary(15);
+        verify(queryUpdateEmitter).emit(eq(FetchAccountSummariesQuery.class), any(), eq(List.of(accountSummary)));
+    }
+
+    @Test
+    @DisplayName("it should update the fetch account summaries query when a money withdrew from account event is issued")
+    void it_should_update_the_fetch_account_summaries_query_when_a_money_withdrew_from_account_event_is_issued() {
+        projection.on(getAccountOpenedEvent(5));
+        projection.on(new MoneyWithdrewFromAccountEvent("id", 3, "", mock(Date.class)));
+
+        AccountSummary accountSummary = getAccountSummary(2);
         verify(queryUpdateEmitter).emit(eq(FetchAccountSummariesQuery.class), any(), eq(List.of(accountSummary)));
     }
 

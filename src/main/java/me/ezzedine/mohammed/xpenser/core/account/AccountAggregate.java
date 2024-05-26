@@ -9,6 +9,8 @@ import me.ezzedine.mohammed.xpenser.core.account.opening.AccountOpenedEvent;
 import me.ezzedine.mohammed.xpenser.core.account.opening.OpenAccountCommand;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.DepositMoneyCommand;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.MoneyDepositedInAccountEvent;
+import me.ezzedine.mohammed.xpenser.core.account.transactions.MoneyWithdrewFromAccountEvent;
+import me.ezzedine.mohammed.xpenser.core.account.transactions.WithdrawMoneyCommand;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
@@ -64,5 +66,23 @@ public class AccountAggregate {
     @EventSourcingHandler
     public void on(MoneyDepositedInAccountEvent event) {
         this.budget = new Budget(budget.getCurrency(), budget.getAmount() + event.amount());
+    }
+
+    @CommandHandler
+    public void handle(WithdrawMoneyCommand command) {
+        if (command.amount() <= 0) {
+            throw new IllegalArgumentException("Amount should be greater than zero.");
+        }
+
+        if (!budget.canWithdraw(command.amount())) {
+            throw new IllegalArgumentException("Not enough balance to withdraw.");
+        }
+
+        apply(new MoneyWithdrewFromAccountEvent(command.accountId(), command.amount(), command.note(), command.timestamp()));
+    }
+
+    @EventSourcingHandler
+    public void on(MoneyWithdrewFromAccountEvent event) {
+        this.budget = new Budget(budget.getCurrency(), budget.getAmount() - event.amount());
     }
 }

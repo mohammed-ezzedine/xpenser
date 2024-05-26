@@ -8,6 +8,8 @@ import me.ezzedine.mohammed.xpenser.core.account.opening.AccountOpenedEvent;
 import me.ezzedine.mohammed.xpenser.core.account.opening.OpenAccountCommand;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.DepositMoneyCommand;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.MoneyDepositedInAccountEvent;
+import me.ezzedine.mohammed.xpenser.core.account.transactions.MoneyWithdrewFromAccountEvent;
+import me.ezzedine.mohammed.xpenser.core.account.transactions.WithdrawMoneyCommand;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,6 +64,14 @@ class AccountAggregateTest {
     }
 
     @Test
+    @DisplayName("it should throw an exception when receiving a debit money command with a zero amount")
+    void it_should_throw_an_exception_when_receiving_a_debit_money_command_with_a_zero_amount() {
+        testFixture.given(accountOpenedEvent())
+                .when(new DepositMoneyCommand(ACCOUNT_ID, 0, "", mock(Date.class)))
+                .expectException(IllegalArgumentException.class);
+    }
+
+    @Test
     @DisplayName("it should publish a debit transaction initiated event upon receiving a debit money command")
     void it_should_publish_a_debit_transaction_initiated_event_upon_receiving_a_debit_money_command() {
         double debitAmount = new Random().nextDouble(1, 10);
@@ -77,6 +87,48 @@ class AccountAggregateTest {
                 .when(new DepositMoneyCommand(ACCOUNT_ID, 5, "", mock(Date.class)))
                 .expectSuccessfulHandlerExecution()
                 .expectState(account -> assertEquals(15, account.getBudget().getAmount()));
+    }
+
+    @Test
+    @DisplayName("it should throw an exception upon receiving a withdraw money command with a negative amount value")
+    void it_should_throw_an_exception_upon_receiving_a_withdraw_money_command_with_a_negative_amount_value() {
+        testFixture.given(accountOpenedEvent())
+                .when(new WithdrawMoneyCommand(ACCOUNT_ID, -1, "", mock(Date.class)))
+                .expectException(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("it should throw an exception upon receiving a withdraw money command with a zero amount value")
+    void it_should_throw_an_exception_upon_receiving_a_withdraw_money_command_with_a_zero_amount_value() {
+        testFixture.given(accountOpenedEvent())
+                .when(new WithdrawMoneyCommand(ACCOUNT_ID, 0, "", mock(Date.class)))
+                .expectException(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("it should throw an exception upon receiving a withdraw money command with a value greater than the available balance")
+    void it_should_throw_an_exception_upon_receiving_a_withdraw_money_command_with_a_value_greater_than_the_available_balance() {
+        testFixture.given(accountOpenedEvent())
+                .when(new WithdrawMoneyCommand(ACCOUNT_ID, INITIAL_AMOUNT + 1, "", mock(Date.class)))
+                .expectException(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("it should issue a money withdrew from account event upon receiving a withdraw money command with a valid requested amount")
+    void it_should_issue_a_money_withdrew_from_account_event_upon_receiving_a_withdraw_money_command_with_a_valid_requested_amount() {
+        testFixture.given(accountOpenedEvent())
+                .when(new WithdrawMoneyCommand(ACCOUNT_ID, 9, "transaction summary", timestamp))
+                .expectSuccessfulHandlerExecution()
+                .expectEvents(new MoneyWithdrewFromAccountEvent(ACCOUNT_ID, 9, "transaction summary", timestamp));
+    }
+
+    @Test
+    @DisplayName("it should subtract the request amount from the budget upon receiving a withdraw money command with")
+    void it_should_subtract_the_request_amount_from_the_budget_upon_receiving_a_withdraw_money_command_with() {
+        testFixture.given(accountOpenedEvent())
+                .when(new WithdrawMoneyCommand(ACCOUNT_ID, 9, "transaction summary", timestamp))
+                .expectSuccessfulHandlerExecution()
+                .expectState(acc -> assertEquals(1, acc.getBudget().getAmount()));
     }
 
     @NotNull
