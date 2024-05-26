@@ -2,12 +2,14 @@ package me.ezzedine.mohammed.xpenser.core.account.transactions;
 
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
+import javax.annotation.Nonnull;
 import java.util.Date;
 
 public record DepositMoneyCommand(
         @TargetAggregateIdentifier
-        String accountId,
+        @Nonnull String accountId,
         double amount,
-        Date timestamp
+        @Nonnull String note,
+        @Nonnull Date timestamp
 ) {
 }

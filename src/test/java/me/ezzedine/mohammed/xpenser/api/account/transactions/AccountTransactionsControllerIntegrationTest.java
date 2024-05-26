@@ -59,7 +59,7 @@ class AccountTransactionsControllerIntegrationTest {
                     .expectStatus()
                     .is2xxSuccessful();
 
-            verify(commandGateway).send(new DepositMoneyCommand("account-id", 10, currentDate));
+            verify(commandGateway).send(new DepositMoneyCommand("account-id", 10, "message", currentDate));
         }
     }
 }

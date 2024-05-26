@@ -1,10 +1,12 @@
 package me.ezzedine.mohammed.xpenser.core.account.transactions;
 
+import javax.annotation.Nonnull;
 import java.util.Date;
 
 public record MoneyDepositedInAccountEvent(
-        String accountId,
+        @Nonnull String accountId,
         double amount,
-        Date timestamp
+        @Nonnull String note,
+        @Nonnull Date timestamp
 ) {
 }

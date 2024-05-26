@@ -58,7 +58,7 @@ public class AccountAggregate {
             throw new IllegalArgumentException("Amount should be greater than zero.");
         }
 
-        apply(new MoneyDepositedInAccountEvent(command.accountId(), command.amount(), command.timestamp()));
+        apply(new MoneyDepositedInAccountEvent(command.accountId(), command.amount(), command.note(), command.timestamp()));
     }
 
     @EventSourcingHandler

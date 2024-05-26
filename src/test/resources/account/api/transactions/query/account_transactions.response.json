@@ -2,6 +2,7 @@
   {
     "amount": 14.0,
     "balance": 20.0,
+    "note": "transaction-summary",
     "timestamp": "2024-05-25T16:04:47.073+00:00"
   }
 ]

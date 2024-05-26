@@ -1,4 +1,6 @@
 package me.ezzedine.mohammed.xpenser.api.account.transactions;
 
-public record AddMoneyToAccountApiRequest(double amount) {
+import javax.annotation.Nonnull;
+
+public record AddMoneyToAccountApiRequest(double amount, @Nonnull String note) {
 }

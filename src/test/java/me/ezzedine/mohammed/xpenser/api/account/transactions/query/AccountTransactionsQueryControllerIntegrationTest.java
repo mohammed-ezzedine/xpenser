@@ -40,7 +40,7 @@ class AccountTransactionsQueryControllerIntegrationTest {
         @BeforeEach
         void setUp() {
             when(queryGateway.query(any(), any(ResponseType.class))).thenReturn(CompletableFuture.completedFuture(List.of(
-                    new TransactionSummary(14, 20, Date.from(Instant.parse("2024-05-25T16:04:47.073Z"))))));
+                    new TransactionSummary(14, 20, "transaction-summary", Date.from(Instant.parse("2024-05-25T16:04:47.073Z"))))));
         }
 
         @Test

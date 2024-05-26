@@ -57,7 +57,7 @@ class AccountAggregateTest {
     @DisplayName("it should throw an exception when receiving a debit money command with a negative amount")
     void it_should_throw_an_exception_when_receiving_a_debit_money_command_with_a_negative_amount() {
         testFixture.given(accountOpenedEvent())
-                .when(new DepositMoneyCommand(ACCOUNT_ID, -4, mock(Date.class)))
+                .when(new DepositMoneyCommand(ACCOUNT_ID, -4, "", mock(Date.class)))
                 .expectException(IllegalArgumentException.class);
     }
 
@@ -66,15 +66,15 @@ class AccountAggregateTest {
     void it_should_publish_a_debit_transaction_initiated_event_upon_receiving_a_debit_money_command() {
         double debitAmount = new Random().nextDouble(1, 10);
         testFixture.given(accountOpenedEvent())
-                .when(new DepositMoneyCommand(ACCOUNT_ID, debitAmount, timestamp))
-                .expectEvents(new MoneyDepositedInAccountEvent(ACCOUNT_ID, debitAmount, timestamp));
+                .when(new DepositMoneyCommand(ACCOUNT_ID, debitAmount, "transaction message", timestamp))
+                .expectEvents(new MoneyDepositedInAccountEvent(ACCOUNT_ID, debitAmount, "transaction message", timestamp));
     }
 
     @Test
     @DisplayName("it should add the new amount to the budget upon receiving money added to account event")
     void it_should_add_the_new_amount_to_the_budget_upon_receiving_money_added_to_account_event() {
         testFixture.given(accountOpenedEvent())
-                .when(new DepositMoneyCommand(ACCOUNT_ID, 5, mock(Date.class)))
+                .when(new DepositMoneyCommand(ACCOUNT_ID, 5, "", mock(Date.class)))
                 .expectSuccessfulHandlerExecution()
                 .expectState(account -> assertEquals(15, account.getBudget().getAmount()));
     }

@@ -17,6 +17,6 @@ public class AccountTransactionsController {
 
     @PostMapping("deposit")
     public Mono<Void> addMoneyToAccount(@PathVariable String id, @RequestBody AddMoneyToAccountApiRequest request) {
-        return Mono.fromFuture(commandGateway.send(new DepositMoneyCommand(id, request.amount(), dateFactory.now())));
+        return Mono.fromFuture(commandGateway.send(new DepositMoneyCommand(id, request.amount(), request.note(), dateFactory.now())));
     }
 }

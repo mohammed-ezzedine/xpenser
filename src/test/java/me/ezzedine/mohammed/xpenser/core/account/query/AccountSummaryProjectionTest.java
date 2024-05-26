@@ -54,7 +54,7 @@ class AccountSummaryProjectionTest {
     @DisplayName("it should update the fetch account summaries query when an account budget updated event is issued")
     void it_should_update_the_fetch_account_summaries_query_when_an_account_budget_updated_event_is_issued() {
         projection.on(getAccountOpenedEvent(5));
-        projection.on(new MoneyDepositedInAccountEvent("id", 10, mock(Date.class)));
+        projection.on(new MoneyDepositedInAccountEvent("id", 10, "", mock(Date.class)));
 
         AccountSummary accountSummary = getAccountSummary(15);
         verify(queryUpdateEmitter).emit(eq(FetchAccountSummariesQuery.class), any(), eq(List.of(accountSummary)));
