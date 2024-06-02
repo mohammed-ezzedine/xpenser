@@ -26,7 +26,7 @@ class TransferMoneySagaTest {
                 .whenAggregate(SOURCE_ACCOUNT_ID)
                 .publishes(new MoneyTransferInitiatedEvent(TRANSACTION_ID, SOURCE_ACCOUNT_ID, DESTINATION_ACCOUNT_ID, AMOUNT, TIMESTAMP))
                 .expectAssociationWith("transactionId", TRANSACTION_ID)
-                .expectDispatchedCommands(new WithdrawMoneyCommand(TRANSACTION_ID, SOURCE_ACCOUNT_ID, AMOUNT, "Transfer to account " + DESTINATION_ACCOUNT_ID, TIMESTAMP));
+                .expectDispatchedCommands(new WithdrawMoneyCommand(TRANSACTION_ID, SOURCE_ACCOUNT_ID, AMOUNT, "Internal Transfer", TIMESTAMP));
     }
 
     @Test
@@ -34,8 +34,8 @@ class TransferMoneySagaTest {
     void it_should_issue_a_deposit_money_command_into_the_destination_account_upon_receiving_a_money_withdrew_from_the_source_account_event() {
         testFixture.givenAggregate(SOURCE_ACCOUNT_ID)
                 .published(new MoneyTransferInitiatedEvent(TRANSACTION_ID, SOURCE_ACCOUNT_ID, DESTINATION_ACCOUNT_ID, AMOUNT, TIMESTAMP))
-                .whenPublishingA(new MoneyWithdrewFromAccountEvent(TRANSACTION_ID, SOURCE_ACCOUNT_ID, AMOUNT, "Transfer to account " + DESTINATION_ACCOUNT_ID, TIMESTAMP))
-                .expectDispatchedCommands(new DepositMoneyCommand(TRANSACTION_ID, DESTINATION_ACCOUNT_ID, AMOUNT, "Transfer from account " + SOURCE_ACCOUNT_ID, TIMESTAMP));
+                .whenPublishingA(new MoneyWithdrewFromAccountEvent(TRANSACTION_ID, SOURCE_ACCOUNT_ID, AMOUNT, "Internal Transfer", TIMESTAMP))
+                .expectDispatchedCommands(new DepositMoneyCommand(TRANSACTION_ID, DESTINATION_ACCOUNT_ID, AMOUNT, "Internal Transfer", TIMESTAMP));
     }
 
     @Test
@@ -43,7 +43,7 @@ class TransferMoneySagaTest {
     void it_should_end_upon_receiving_a_money_deposited_event() {
         testFixture.givenAggregate(SOURCE_ACCOUNT_ID)
                 .published(new MoneyTransferInitiatedEvent(TRANSACTION_ID, SOURCE_ACCOUNT_ID, DESTINATION_ACCOUNT_ID, AMOUNT, TIMESTAMP))
-                .whenPublishingA(new MoneyDepositedInAccountEvent(TRANSACTION_ID, DESTINATION_ACCOUNT_ID, AMOUNT, "Transfer from account " + SOURCE_ACCOUNT_ID, TIMESTAMP))
+                .whenPublishingA(new MoneyDepositedInAccountEvent(TRANSACTION_ID, DESTINATION_ACCOUNT_ID, AMOUNT, "Internal Transfer", TIMESTAMP))
                 .expectActiveSagas(0);
     }
 }

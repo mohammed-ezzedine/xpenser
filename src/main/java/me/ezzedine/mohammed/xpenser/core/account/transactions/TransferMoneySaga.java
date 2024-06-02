@@ -33,12 +33,12 @@ public class TransferMoneySaga {
         amount = event.amount();
         timestamp = event.timestamp();
 
-        this.commandGateway.send(new WithdrawMoneyCommand(transactionId, sourceAccountId, amount, "Transfer to account " + destinationAccountId, timestamp));
+        this.commandGateway.send(new WithdrawMoneyCommand(transactionId, sourceAccountId, amount, "Internal Transfer", timestamp));
     }
 
     @SagaEventHandler(associationProperty = "transactionId")
     public void on(MoneyWithdrewFromAccountEvent event) {
-        this.commandGateway.send(new DepositMoneyCommand(transactionId, destinationAccountId, amount, "Transfer from account " + sourceAccountId, timestamp));
+        this.commandGateway.send(new DepositMoneyCommand(transactionId, destinationAccountId, amount, "Internal Transfer", timestamp));
     }
 
     @EndSaga

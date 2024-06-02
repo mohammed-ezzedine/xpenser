@@ -61,7 +61,7 @@ class AccountTransactionsProjectionTest {
         projection.on(new MoneyWithdrewFromAccountEvent("", "account-id", BigDecimal.valueOf(5.3), "note", timestamp));
         List<TransactionSummary> transactions = projection.handle(new FetchAccountTransactionsQuery("account-id"));
         assertEquals(2, transactions.size());
-        assertEquals(BigDecimal.valueOf(5.3), transactions.getFirst().amount());
+        assertEquals(BigDecimal.valueOf(-5.3), transactions.getFirst().amount());
         assertEquals(BigDecimal.valueOf(4.7), transactions.getFirst().balance());
         assertEquals("note", transactions.getFirst().note());
         assertEquals(timestamp, transactions.getFirst().timestamp());

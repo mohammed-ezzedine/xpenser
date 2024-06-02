@@ -37,7 +37,7 @@ public class AccountTransactionsProjection {
     public void on(MoneyWithdrewFromAccountEvent event) {
         List<TransactionSummary> transactionSummaries = accountsTransactions.get(event.accountId());
         ArrayList<TransactionSummary> updatedTransactions = new ArrayList<>();
-        updatedTransactions.add(new TransactionSummary(event.amount(), transactionSummaries.getFirst().balance().subtract(event.amount()), event.note(), event.timestamp()));
+        updatedTransactions.add(new TransactionSummary(event.amount().negate(), transactionSummaries.getFirst().balance().subtract(event.amount()), event.note(), event.timestamp()));
         updatedTransactions.addAll(transactionSummaries);
         accountsTransactions.put(event.accountId(), updatedTransactions);
     }
