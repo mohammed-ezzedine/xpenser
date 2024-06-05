@@ -1,16 +1,10 @@
 spring:
   application:
     name: xpenser
-
-axoniq:
-  console:
-    application-name: XPenser
-    credentials: 01498322-0:5aa7a44016304205bf7c2e24b087bc7c
-    dlq-mode: NONE
-
-
-axon:
-  serializer:
-    general: jackson
-  axonserver:
-    servers: ${AXON_SERVER_HOST:localhost}
+  data:
+    mongodb:
+      host: ${MONGO_DB_HOST:localhost}
+      port: ${MONGO_DB_PORT:27017}
+      username: ${MONGO_DB_USERNAME:user}
+      password: ${MONGO_DB_PASSWORD:password}
+      authentication-database: ${MONGO_DB_AUTHENTICATION_DB:admin}
