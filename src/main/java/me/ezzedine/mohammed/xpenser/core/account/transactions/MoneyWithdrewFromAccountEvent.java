@@ -1,13 +1,14 @@
 package me.ezzedine.mohammed.xpenser.core.account.transactions;
 
-import javax.annotation.Nonnull;
+import lombok.NonNull;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
 public record MoneyWithdrewFromAccountEvent(
-        @Nonnull String transactionId,
-        @Nonnull String accountId,
-        @Nonnull BigDecimal amount,
-        @Nonnull String note,
-        @Nonnull Date timestamp
+        @NonNull String transactionId,
+        @NonNull String accountId,
+        @NonNull BigDecimal amount,
+        @NonNull String note,
+        @NonNull Date timestamp
 ) { }

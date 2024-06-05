@@ -1,13 +1,14 @@
 package me.ezzedine.mohammed.xpenser.core.account.transactions;
 
-import javax.annotation.Nonnull;
+import lombok.NonNull;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
 public record MoneyTransferInitiatedEvent(
-    @Nonnull String transactionId,
-    @Nonnull String sourceAccountId,
-    @Nonnull String destinationAccountId,
-    @Nonnull BigDecimal amount,
-    @Nonnull Date timestamp
+    @NonNull String transactionId,
+    @NonNull String sourceAccountId,
+    @NonNull String destinationAccountId,
+    @NonNull BigDecimal amount,
+    @NonNull Date timestamp
 ) { }

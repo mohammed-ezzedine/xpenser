@@ -1,9 +1,9 @@
 package me.ezzedine.mohammed.xpenser.core.account.budget;
 
-import javax.annotation.Nonnull;
+import lombok.NonNull;
 
 public record Currency (
-    @Nonnull CurrencyCode code,
-    @Nonnull String symbol,
-    @Nonnull String name
+    @NonNull CurrencyCode code,
+    @NonNull String symbol,
+    @NonNull String name
 ) { }

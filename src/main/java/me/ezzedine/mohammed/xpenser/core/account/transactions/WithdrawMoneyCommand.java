@@ -1,17 +1,17 @@
 package me.ezzedine.mohammed.xpenser.core.account.transactions;
 
+import lombok.NonNull;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
-import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 import java.util.Date;
 
 public record WithdrawMoneyCommand(
-        @Nonnull String transactionId,
+        @NonNull String transactionId,
         @TargetAggregateIdentifier
-        @Nonnull String accountId,
-        @Nonnull BigDecimal amount,
-        @Nonnull String note,
-        @Nonnull Date timestamp
+        @NonNull String accountId,
+        @NonNull BigDecimal amount,
+        @NonNull String note,
+        @NonNull Date timestamp
 ) {
 }

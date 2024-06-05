@@ -1,16 +1,16 @@
 package me.ezzedine.mohammed.xpenser.core.account.transactions;
 
+import lombok.NonNull;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
-import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 import java.util.Date;
 
 public record TransferMoneyCommand(
         @TargetAggregateIdentifier
-        @Nonnull String sourceAccountId,
-        @Nonnull String destinationAccountId,
-        @Nonnull String transactionId,
-        @Nonnull BigDecimal amount,
-        @Nonnull Date timestamp
+        @NonNull String sourceAccountId,
+        @NonNull String destinationAccountId,
+        @NonNull String transactionId,
+        @NonNull BigDecimal amount,
+        @NonNull Date timestamp
 ) { }

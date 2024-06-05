@@ -1,9 +1,10 @@
 package me.ezzedine.mohammed.xpenser.api.account.transactions;
 
-import javax.annotation.Nonnull;
+import jakarta.validation.constraints.NotNull;
+
 import java.math.BigDecimal;
 
 public record AddMoneyToAccountApiRequest(
-        @Nonnull BigDecimal amount,
-        @Nonnull String note
+        @NotNull BigDecimal amount,
+        @NotNull String note
 ) { }

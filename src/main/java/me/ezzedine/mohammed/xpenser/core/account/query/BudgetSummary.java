@@ -1,13 +1,13 @@
 package me.ezzedine.mohammed.xpenser.core.account.query;
 
+import lombok.NonNull;
 import me.ezzedine.mohammed.xpenser.core.account.budget.Budget;
 
-import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 
 public record BudgetSummary(
-    @Nonnull Currency currency,
-    @Nonnull BigDecimal amount
+    @NonNull Currency currency,
+    @NonNull BigDecimal amount
 ) {
 
     public static BudgetSummary from(Budget budget) {

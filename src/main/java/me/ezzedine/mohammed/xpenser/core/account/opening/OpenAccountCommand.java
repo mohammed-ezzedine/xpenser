@@ -1,16 +1,16 @@
 package me.ezzedine.mohammed.xpenser.core.account.opening;
 
 import lombok.Builder;
+import lombok.NonNull;
 
-import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Builder
 public record OpenAccountCommand(
-    @Nonnull String id,
-    @Nonnull String name,
-    @Nonnull String currencyCode,
-    @Nonnull BigDecimal budgetInitialAmount,
-    @Nonnull Date timestamp
+    @NonNull String id,
+    @NonNull String name,
+    @NonNull String currencyCode,
+    @NonNull BigDecimal budgetInitialAmount,
+    @NonNull Date timestamp
 ) { }
