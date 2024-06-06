@@ -7,7 +7,6 @@ import me.ezzedine.mohammed.xpenser.core.account.opening.AccountOpenedEvent;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.MoneyDepositedInAccountEvent;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.MoneyWithdrewFromAccountEvent;
 import org.axonframework.queryhandling.QueryUpdateEmitter;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -73,13 +72,11 @@ class AccountSummaryProjectionTest {
         verify(queryUpdateEmitter).emit(eq(FetchAccountSummariesQuery.class), any(), eq(List.of(accountSummary)));
     }
 
-    @NotNull
     private static AccountSummary getAccountSummary(double budgetAmount) {
         Currency currency = new Currency(CurrencyCode.EURO.getValue(), Currencies.euro().symbol(), Currencies.euro().name());
         return new AccountSummary("id", "name", new BudgetSummary(currency, BigDecimal.valueOf(budgetAmount)));
     }
 
-    @NotNull
     private static AccountOpenedEvent getAccountOpenedEvent(double budgetAmount) {
         Budget budget = getBudget(budgetAmount);
         return new AccountOpenedEvent("id", "name", budget, mock(Date.class));

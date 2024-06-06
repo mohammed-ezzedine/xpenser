@@ -8,7 +8,6 @@ import me.ezzedine.mohammed.xpenser.core.account.opening.AccountOpenedEvent;
 import me.ezzedine.mohammed.xpenser.core.account.opening.OpenAccountCommand;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.*;
 import org.axonframework.test.aggregate.AggregateTestFixture;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,7 @@ class AccountAggregateTest {
     public static final String ACCOUNT_NAME = UUID.randomUUID().toString();
     public static final String ACCOUNT_ID = UUID.randomUUID().toString();
     public static final BigDecimal INITIAL_AMOUNT = BigDecimal.valueOf(10);
-    public static final Currency CURRENCY = mock(Currency.class);
+
     public static final String TRANSACTION_ID = UUID.randomUUID().toString();
     private final AggregateTestFixture<AccountAggregate> testFixture = new AggregateTestFixture<>(AccountAggregate.class);
     private Date timestamp;
@@ -165,8 +164,7 @@ class AccountAggregateTest {
                 .expectEvents(new MoneyTransferInitiatedEvent(transactionId, ACCOUNT_ID, destinationAccountId, BigDecimal.valueOf(5), timestamp));
     }
 
-    @NotNull
     private AccountOpenedEvent accountOpenedEvent() {
-        return new AccountOpenedEvent(ACCOUNT_ID, ACCOUNT_NAME, new Budget(CURRENCY, INITIAL_AMOUNT), timestamp);
+        return new AccountOpenedEvent(ACCOUNT_ID, ACCOUNT_NAME, new Budget(new Currency(CurrencyCode.EURO, "EUR", "Euro"), INITIAL_AMOUNT), timestamp);
     }
 }
