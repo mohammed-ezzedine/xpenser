@@ -1,7 +1,7 @@
 package me.ezzedine.mohammed.xpenser.core.account.transactions.query;
 
 import me.ezzedine.mohammed.xpenser.core.account.budget.Budget;
-import me.ezzedine.mohammed.xpenser.core.account.budget.Currency;
+import me.ezzedine.mohammed.xpenser.core.account.budget.CurrencyUtils;
 import me.ezzedine.mohammed.xpenser.core.account.opening.AccountOpenedEvent;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.MoneyDepositedInAccountEvent;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.MoneyWithdrewFromAccountEvent;
@@ -30,7 +30,7 @@ class AccountTransactionsProjectionTest {
     @DisplayName("it should save a transaction when an account is opened")
     void it_should_save_a_transaction_when_an_account_is_opened() {
         Date timestamp = mock(Date.class);
-        projection.on(new AccountOpenedEvent("account-id", UUID.randomUUID().toString(), new Budget(mock(Currency.class), BigDecimal.valueOf(10)), timestamp));
+        projection.on(new AccountOpenedEvent("account-id", UUID.randomUUID().toString(), new Budget(CurrencyUtils.currency(), BigDecimal.valueOf(10)), timestamp));
         List<TransactionSummary> transactions = projection.handle(new FetchAccountTransactionsQuery("account-id"));
         assertEquals(1, transactions.size());
         assertEquals(BigDecimal.valueOf(10), transactions.getFirst().amount());
@@ -42,7 +42,7 @@ class AccountTransactionsProjectionTest {
     @Test
     @DisplayName("it should save a transaction when money is deposited into an account")
     void it_should_save_a_transaction_when_money_is_deposited_into_an_account() {
-        projection.on(new AccountOpenedEvent("account-id", UUID.randomUUID().toString(), new Budget(mock(Currency.class), BigDecimal.valueOf(10)), mock(Date.class)));
+        projection.on(new AccountOpenedEvent("account-id", UUID.randomUUID().toString(), new Budget(CurrencyUtils.currency(), BigDecimal.valueOf(10)), mock(Date.class)));
         Date timestamp = mock(Date.class);
         projection.on(new MoneyDepositedInAccountEvent(UUID.randomUUID().toString(), "account-id", BigDecimal.valueOf(5.3), "note", timestamp));
         List<TransactionSummary> transactions = projection.handle(new FetchAccountTransactionsQuery("account-id"));
@@ -56,7 +56,7 @@ class AccountTransactionsProjectionTest {
     @Test
     @DisplayName("it should save a transaction when money is withdrew from an account")
     void it_should_save_a_transaction_when_money_is_withdrew_from_an_account() {
-        projection.on(new AccountOpenedEvent("account-id", UUID.randomUUID().toString(), new Budget(mock(Currency.class), BigDecimal.valueOf(10)), mock(Date.class)));
+        projection.on(new AccountOpenedEvent("account-id", UUID.randomUUID().toString(), new Budget(CurrencyUtils.currency(), BigDecimal.valueOf(10)), mock(Date.class)));
         Date timestamp = mock(Date.class);
         projection.on(new MoneyWithdrewFromAccountEvent("", "account-id", BigDecimal.valueOf(5.3), "note", timestamp));
         List<TransactionSummary> transactions = projection.handle(new FetchAccountTransactionsQuery("account-id"));
