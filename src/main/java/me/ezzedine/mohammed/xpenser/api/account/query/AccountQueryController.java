@@ -1,8 +1,8 @@
 package me.ezzedine.mohammed.xpenser.api.account.query;
 
 import lombok.RequiredArgsConstructor;
-import me.ezzedine.mohammed.xpenser.core.account.query.AccountSummary;
-import me.ezzedine.mohammed.xpenser.core.account.query.FetchAccountSummariesQuery;
+import me.ezzedine.mohammed.xpenser.core.account.projection.summary.AccountSummary;
+import me.ezzedine.mohammed.xpenser.core.account.projection.summary.FetchAccountSummariesQuery;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.web.bind.annotation.GetMapping;

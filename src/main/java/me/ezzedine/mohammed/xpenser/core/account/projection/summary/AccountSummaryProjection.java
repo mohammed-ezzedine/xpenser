@@ -1,4 +1,4 @@
-package me.ezzedine.mohammed.xpenser.core.account.query;
+package me.ezzedine.mohammed.xpenser.core.account.projection.summary;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

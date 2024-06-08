@@ -1,7 +1,7 @@
 package me.ezzedine.mohammed.xpenser.utils;
 
 import me.ezzedine.mohammed.xpenser.core.account.opening.AccountOpenedEvent;
-import me.ezzedine.mohammed.xpenser.core.account.query.AccountSummary;
+import me.ezzedine.mohammed.xpenser.core.account.projection.summary.AccountSummary;
 import me.ezzedine.mohammed.xpenser.infra.persistence.account.AccountSummaryDocument;
 
 import java.util.Date;

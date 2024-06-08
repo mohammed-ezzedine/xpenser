@@ -1,9 +1,9 @@
 package me.ezzedine.mohammed.xpenser.api.account.query;
 
 import me.ezzedine.mohammed.xpenser.api.account.ResourceUtils;
-import me.ezzedine.mohammed.xpenser.core.account.query.AccountSummary;
-import me.ezzedine.mohammed.xpenser.core.account.query.BudgetSummary;
-import me.ezzedine.mohammed.xpenser.core.account.query.FetchAccountSummariesQuery;
+import me.ezzedine.mohammed.xpenser.core.account.projection.summary.AccountSummary;
+import me.ezzedine.mohammed.xpenser.core.account.projection.summary.BudgetSummary;
+import me.ezzedine.mohammed.xpenser.core.account.projection.summary.FetchAccountSummariesQuery;
 import me.ezzedine.mohammed.xpenser.utils.CurrencyUtils;
 import org.axonframework.messaging.responsetypes.ResponseType;
 import org.axonframework.messaging.responsetypes.ResponseTypes;

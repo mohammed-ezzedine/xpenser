@@ -1,4 +1,4 @@
-package me.ezzedine.mohammed.xpenser.core.account.query;
+package me.ezzedine.mohammed.xpenser.core.account.projection.summary;
 
 import me.ezzedine.mohammed.xpenser.utils.AccountUtils;
 import me.ezzedine.mohammed.xpenser.utils.BudgetUtils;
