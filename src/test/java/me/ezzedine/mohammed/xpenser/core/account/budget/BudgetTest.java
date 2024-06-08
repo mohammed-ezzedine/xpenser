@@ -1,5 +1,6 @@
 package me.ezzedine.mohammed.xpenser.core.account.budget;
 
+import me.ezzedine.mohammed.xpenser.utils.CurrencyUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -29,14 +29,14 @@ public class AccountSummaryProjection {
     @EventHandler
     public void on(MoneyDepositedInAccountEvent event) {
         AccountSummary accountSummary = accountSummaries.get(event.accountId());
-        accountSummaries.put(event.accountId(), new AccountSummary(event.accountId(), accountSummary.name(), new BudgetSummary(accountSummary.budget().currency(), accountSummary.budget().amount().add(event.amount()))));
+        accountSummaries.put(event.accountId(), new AccountSummary(event.accountId(), accountSummary.name(), new BudgetSummary(accountSummary.budget().currencyCode(), accountSummary.budget().amount().add(event.amount()))));
         queryUpdateEmitter.emit(FetchAccountSummariesQuery.class, queryUpdateEmitter -> true, accountSummaries.values().stream().toList());
     }
 
     @EventHandler
     public void on(MoneyWithdrewFromAccountEvent event) {
         AccountSummary accountSummary = accountSummaries.get(event.accountId());
-        accountSummaries.put(event.accountId(), new AccountSummary(event.accountId(), accountSummary.name(), new BudgetSummary(accountSummary.budget().currency(), accountSummary.budget().amount().subtract(event.amount()))));
+        accountSummaries.put(event.accountId(), new AccountSummary(event.accountId(), accountSummary.name(), new BudgetSummary(accountSummary.budget().currencyCode(), accountSummary.budget().amount().subtract(event.amount()))));
         queryUpdateEmitter.emit(FetchAccountSummariesQuery.class, queryUpdateEmitter -> true, accountSummaries.values().stream().toList());
     }
 

@@ -23,7 +23,7 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
     implementation("org.axonframework:axon-spring-boot-starter:4.9.3") {
         exclude("org.axonframework", "axon-server-connector")
     }
@@ -37,8 +37,19 @@ dependencies {
     testImplementation("org.axonframework:axon-test:4.9.3")
     testImplementation("io.projectreactor:reactor-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation("org.mapstruct:mapstruct:1.5.5.Final")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+    testImplementation("org.testcontainers:junit-jupiter")
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+//
+//tasks.withType<JavaCompile> {
+//    options.compilerArgs.addAll(listOf(
+//        "-Amapstruct.defaultComponentModel=spring", // Example of a MapStruct configuration
+//        "-Amapstruct.suppressGeneratorTimestamp=true"
+//    ))
+////    options.annotationProcessorGeneratedSourcesDirectory = file("$buildDir/generated/sources/annotationProcessor/java/main")
+//}

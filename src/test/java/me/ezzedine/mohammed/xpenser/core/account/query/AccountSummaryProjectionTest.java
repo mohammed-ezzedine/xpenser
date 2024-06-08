@@ -73,8 +73,7 @@ class AccountSummaryProjectionTest {
     }
 
     private static AccountSummary getAccountSummary(double budgetAmount) {
-        Currency currency = new Currency(CurrencyCode.EURO.getValue(), Currencies.euro().symbol(), Currencies.euro().name());
-        return new AccountSummary("id", "name", new BudgetSummary(currency, BigDecimal.valueOf(budgetAmount)));
+        return new AccountSummary("id", "name", new BudgetSummary(CurrencyCode.EURO, BigDecimal.valueOf(budgetAmount)));
     }
 
     private static AccountOpenedEvent getAccountOpenedEvent(double budgetAmount) {
