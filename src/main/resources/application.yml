@@ -8,3 +8,4 @@ spring:
       username: ${MONGO_DB_USERNAME:user}
       password: ${MONGO_DB_PASSWORD:password}
       authentication-database: ${MONGO_DB_AUTHENTICATION_DB:admin}
+      database: ${MONGO_DB_DATABASE_NAME:xpenser}
