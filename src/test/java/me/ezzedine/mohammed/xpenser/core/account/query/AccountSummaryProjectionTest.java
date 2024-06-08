@@ -1,87 +1,52 @@
 package me.ezzedine.mohammed.xpenser.core.account.query;
 
-import me.ezzedine.mohammed.xpenser.core.account.budget.Budget;
-import me.ezzedine.mohammed.xpenser.core.account.budget.Currencies;
-import me.ezzedine.mohammed.xpenser.core.account.budget.CurrencyCode;
-import me.ezzedine.mohammed.xpenser.core.account.opening.AccountOpenedEvent;
-import me.ezzedine.mohammed.xpenser.core.account.transactions.MoneyDepositedInAccountEvent;
-import me.ezzedine.mohammed.xpenser.core.account.transactions.MoneyWithdrewFromAccountEvent;
-import org.axonframework.queryhandling.QueryUpdateEmitter;
+import me.ezzedine.mohammed.xpenser.utils.AccountUtils;
+import me.ezzedine.mohammed.xpenser.utils.BudgetUtils;
+import me.ezzedine.mohammed.xpenser.utils.TransactionUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Mono;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 class AccountSummaryProjectionTest {
 
-    private QueryUpdateEmitter queryUpdateEmitter;
     private AccountSummaryProjection projection;
+    private AccountSummaryStorage storage;
 
     @BeforeEach
     void setUp() {
-        queryUpdateEmitter = mock(QueryUpdateEmitter.class);
-        projection = new AccountSummaryProjection(queryUpdateEmitter);
+        storage = mock(AccountSummaryStorage.class);
+        projection = new AccountSummaryProjection(storage, new AccountSummaryProjectionMapperImpl());
+        when(storage.save(any())).thenReturn(Mono.empty());
     }
 
     @Test
-    @DisplayName("it should update the fetch account summaries query when an account opened event is issued")
-    void it_should_update_the_fetch_account_summaries_query_when_an_account_opened_event_is_issued() {
-        double budgetAmount = new Random().nextInt();
-        projection.on(getAccountOpenedEvent(budgetAmount));
+    @DisplayName("it should save an entity in the storage when a new account is opened")
+    void it_should_save_an_entity_in_the_storage_when_a_new_account_is_opened() {
+        projection.on(AccountUtils.accountOpenedEvent());
 
-        AccountSummary accountSummary = getAccountSummary(budgetAmount);
-        verify(queryUpdateEmitter).emit(eq(FetchAccountSummariesQuery.class), any(), eq(List.of(accountSummary)));
+        verify(storage).save(AccountUtils.accountSummary().build());
     }
 
     @Test
-    @DisplayName("it should return the account summaries when the fetch account summaries query is issued")
-    void it_should_return_the_account_summaries_when_the_fetch_account_summaries_query_is_issued() {
-        double budgetAmount = new Random().nextInt();
-        projection.on(getAccountOpenedEvent(budgetAmount));
-        assertEquals(List.of(getAccountSummary(budgetAmount)), projection.handle(new FetchAccountSummariesQuery()));
+    @DisplayName("it should update the amount of an account when a money deposited into account event is issued")
+    void it_should_update_the_amount_of_an_account_when_a_money_deposited_into_account_event_is_issued() {
+        when(storage.find(AccountUtils.ACCOUNT_ID)).thenReturn(Mono.just(AccountUtils.accountSummary().build()));
+
+        projection.on(TransactionUtils.moneyDepositedIntoAccountEvent());
+
+        verify(storage).save(AccountUtils.accountSummary().budget(BudgetUtils.budgetSummary().amount(BudgetUtils.BUDGET_AMOUNT.add(TransactionUtils.TRANSACTION_AMOUNT)).build()).build());
     }
 
     @Test
-    @DisplayName("it should update the fetch account summaries query when a money deposited into account event is issued")
-    void it_should_update_the_fetch_account_summaries_query_when_a_money_deposited_into_account_event_is_issued() {
-        projection.on(getAccountOpenedEvent(5));
-        projection.on(new MoneyDepositedInAccountEvent(UUID.randomUUID().toString(), "id", BigDecimal.valueOf(10), "", mock(Date.class)));
+    @DisplayName("it should update the amount of an account when a money withdrew even is issued")
+    void it_should_update_the_amount_of_an_account_when_a_money_withdrew_even_is_issued() {
+        when(storage.find(AccountUtils.ACCOUNT_ID)).thenReturn(Mono.just(AccountUtils.accountSummary().build()));
 
-        AccountSummary accountSummary = getAccountSummary(15);
-        verify(queryUpdateEmitter).emit(eq(FetchAccountSummariesQuery.class), any(), eq(List.of(accountSummary)));
-    }
+        projection.on(TransactionUtils.moneyWithdrewFromAccountEvent());
 
-    @Test
-    @DisplayName("it should update the fetch account summaries query when a money withdrew from account event is issued")
-    void it_should_update_the_fetch_account_summaries_query_when_a_money_withdrew_from_account_event_is_issued() {
-        projection.on(getAccountOpenedEvent(5));
-        projection.on(new MoneyWithdrewFromAccountEvent("", "id", BigDecimal.valueOf(3), "", mock(Date.class)));
-
-        AccountSummary accountSummary = getAccountSummary(2);
-        verify(queryUpdateEmitter).emit(eq(FetchAccountSummariesQuery.class), any(), eq(List.of(accountSummary)));
-    }
-
-    private static AccountSummary getAccountSummary(double budgetAmount) {
-        return new AccountSummary("id", "name", new BudgetSummary(CurrencyCode.EURO, BigDecimal.valueOf(budgetAmount)));
-    }
-
-    private static AccountOpenedEvent getAccountOpenedEvent(double budgetAmount) {
-        Budget budget = getBudget(budgetAmount);
-        return new AccountOpenedEvent("id", "name", budget, mock(Date.class));
-    }
-
-    private static Budget getBudget(double budgetAmount) {
-        return Budget.builder().amount(BigDecimal.valueOf(budgetAmount)).currency(Currencies.euro()).build();
+        verify(storage).save(AccountUtils.accountSummary().budget(BudgetUtils.budgetSummary().amount(BudgetUtils.BUDGET_AMOUNT.subtract(TransactionUtils.TRANSACTION_AMOUNT)).build()).build());
     }
 }
