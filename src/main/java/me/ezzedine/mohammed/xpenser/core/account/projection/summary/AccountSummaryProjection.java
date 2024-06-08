@@ -6,7 +6,9 @@ import me.ezzedine.mohammed.xpenser.core.account.opening.AccountOpenedEvent;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.MoneyDepositedInAccountEvent;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.MoneyWithdrewFromAccountEvent;
 import org.axonframework.eventhandling.EventHandler;
+import org.axonframework.queryhandling.QueryHandler;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 @Slf4j
 @Service
@@ -38,5 +40,10 @@ public class AccountSummaryProjection {
                 .map(account -> new AccountSummary(event.accountId(), account.name(), new BudgetSummary(account.budget().currencyCode(), account.budget().amount().subtract(event.amount()))))
                 .flatMap(storage::save)
                 .block();
+    }
+
+    @QueryHandler
+    public Flux<AccountSummary> handle(FetchAccountSummariesQuery query) {
+        return storage.fetchAll();
     }
 }

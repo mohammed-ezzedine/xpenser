@@ -6,7 +6,9 @@ import me.ezzedine.mohammed.xpenser.utils.TransactionUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import static org.mockito.Mockito.*;
 
@@ -48,5 +50,18 @@ class AccountSummaryProjectionTest {
         projection.on(TransactionUtils.moneyWithdrewFromAccountEvent());
 
         verify(storage).save(AccountUtils.accountSummary().budget(BudgetUtils.budgetSummary().amount(BudgetUtils.BUDGET_AMOUNT.subtract(TransactionUtils.TRANSACTION_AMOUNT)).build()).build());
+    }
+
+    @Test
+    @DisplayName("it should fetch the existing account summaries from the store when handling fetch account summaries query")
+    void it_should_fetch_the_existing_account_summaries_from_the_store_when_handling_fetch_account_summaries_query() {
+        when(storage.fetchAll()).thenReturn(Flux.just(AccountUtils.accountSummary().build()));
+
+        Flux<AccountSummary> accountSummaryFlux = projection.handle(new FetchAccountSummariesQuery());
+
+        StepVerifier.create(accountSummaryFlux)
+                .expectNext(AccountUtils.accountSummary().build())
+                .expectComplete()
+                .verify();
     }
 }
