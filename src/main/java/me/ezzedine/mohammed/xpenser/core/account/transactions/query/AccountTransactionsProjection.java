@@ -7,43 +7,51 @@ import me.ezzedine.mohammed.xpenser.core.account.transactions.MoneyWithdrewFromA
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryHandler;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
 public class AccountTransactionsProjection {
 
-    private final Map<String, List<TransactionSummary>> accountsTransactions = new ConcurrentHashMap<>();
+    private final AccountTransactionsStorage storage;
+    private final AccountTransactionMapper mapper;
 
     @EventHandler
     public void on(AccountOpenedEvent event) {
-        accountsTransactions.put(event.id(), List.of(new TransactionSummary(event.budget().getAmount(), event.budget().getAmount(), "Account opening", event.timestamp())));
+        storage.save(AccountTransactionSummary.builder().id(event.id()).transactions(List.of(mapper.map(event))).build()).block();
     }
 
     @EventHandler
     public void on(MoneyDepositedInAccountEvent event) {
-        List<TransactionSummary> transactionSummaries = accountsTransactions.get(event.accountId());
-        ArrayList<TransactionSummary> updatedTransactions = new ArrayList<>();
-        updatedTransactions.add(new TransactionSummary(event.amount(), transactionSummaries.getFirst().balance().add(event.amount()), event.note(), event.timestamp()));
-        updatedTransactions.addAll(transactionSummaries);
-        accountsTransactions.put(event.accountId(), updatedTransactions);
+        storage.findById(event.accountId())
+                .map(account -> {
+                    ArrayList<TransactionSummary> updatedTransactions = new ArrayList<>();
+                    updatedTransactions.add(new TransactionSummary(event.amount(), account.transactions().getFirst().balance().add(event.amount()), event.note(), event.timestamp()));
+                    updatedTransactions.addAll(account.transactions());
+                    return AccountTransactionSummary.builder().id(account.id()).transactions(updatedTransactions).build();
+                })
+                .flatMap(storage::save)
+                .block();
     }
 
     @EventHandler
     public void on(MoneyWithdrewFromAccountEvent event) {
-        List<TransactionSummary> transactionSummaries = accountsTransactions.get(event.accountId());
-        ArrayList<TransactionSummary> updatedTransactions = new ArrayList<>();
-        updatedTransactions.add(new TransactionSummary(event.amount().negate(), transactionSummaries.getFirst().balance().subtract(event.amount()), event.note(), event.timestamp()));
-        updatedTransactions.addAll(transactionSummaries);
-        accountsTransactions.put(event.accountId(), updatedTransactions);
+        storage.findById(event.accountId())
+                .map(account -> {
+                    ArrayList<TransactionSummary> updatedTransactions = new ArrayList<>();
+                    updatedTransactions.add(new TransactionSummary(event.amount(), account.transactions().getFirst().balance().subtract(event.amount()), event.note(), event.timestamp()));
+                    updatedTransactions.addAll(account.transactions());
+                    return AccountTransactionSummary.builder().id(account.id()).transactions(updatedTransactions).build();
+                })
+                .flatMap(storage::save)
+                .block();
     }
 
     @QueryHandler
-    public List<TransactionSummary> handle(FetchAccountTransactionsQuery query) {
-        return accountsTransactions.get(query.accountId());
+    public Flux<TransactionSummary> handle(FetchAccountTransactionsQuery query) {
+        return storage.findById(query.accountId()).flatMapIterable(AccountTransactionSummary::transactions);
     }
 }

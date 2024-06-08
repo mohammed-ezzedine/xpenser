@@ -19,7 +19,7 @@ public class AccountTransactionsMongoStorage implements AccountTransactionsStora
     }
 
     @Override
-    public Mono<AccountTransactionSummary> fetch(String id) {
+    public Mono<AccountTransactionSummary> findById(String id) {
         return repository.findById(id).map(mapper::map);
     }
 }

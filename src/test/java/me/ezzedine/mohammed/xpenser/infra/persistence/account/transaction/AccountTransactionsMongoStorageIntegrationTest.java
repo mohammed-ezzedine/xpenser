@@ -67,7 +67,7 @@ class AccountTransactionsMongoStorageIntegrationTest extends DatabaseIntegration
         @Test
         @DisplayName("it should return an empty result when none exist")
         void it_should_return_an_empty_result_when_none_exist() {
-            Mono<AccountTransactionSummary> mono = storage.fetch(UUID.randomUUID().toString());
+            Mono<AccountTransactionSummary> mono = storage.findById(UUID.randomUUID().toString());
 
             StepVerifier.create(mono)
                     .expectNextCount(0)
@@ -80,7 +80,7 @@ class AccountTransactionsMongoStorageIntegrationTest extends DatabaseIntegration
         void it_should_return_the_entity_when_it_exists() {
             repository.save(AccountUtils.accountTransactionsDocument().build()).block();
 
-            Mono<AccountTransactionSummary> mono = storage.fetch(AccountUtils.ACCOUNT_ID);
+            Mono<AccountTransactionSummary> mono = storage.findById(AccountUtils.ACCOUNT_ID);
 
             StepVerifier.create(mono)
                     .expectNext(AccountUtils.accountTransactionsSummary().build())

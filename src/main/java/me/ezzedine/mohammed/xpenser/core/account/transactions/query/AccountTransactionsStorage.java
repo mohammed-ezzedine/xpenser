@@ -5,5 +5,5 @@ import reactor.core.publisher.Mono;
 public interface AccountTransactionsStorage {
 
     Mono<Void> save(AccountTransactionSummary summary);
-    Mono<AccountTransactionSummary> fetch(String id);
+    Mono<AccountTransactionSummary> findById(String id);
 }

@@ -33,6 +33,14 @@ public class TransactionUtils {
         return TransactionSummary.builder().amount(TRANSACTION_AMOUNT).balance(BudgetUtils.BUDGET_AMOUNT).note(TRANSACTION_NOTE).timestamp(TRANSACTION_DATE);
     }
 
+    public static TransactionSummary.TransactionSummaryBuilder openingTransactionSummary() {
+        return TransactionSummary.builder().amount(BudgetUtils.BUDGET_AMOUNT).balance(BudgetUtils.BUDGET_AMOUNT).note("Account opened.").timestamp(AccountUtils.ACCOUNT_CREATION_DATE);
+    }
+
+    public static TransactionSummary.TransactionSummaryBuilder anotherTransactionSummary() {
+        return TransactionSummary.builder().amount(ANOTHER_TRANSACTION_AMOUNT).balance(BudgetUtils.ANOTHER_BUDGET_AMOUNT).note(ANOTHER_TRANSACTION_NOTE).timestamp(ANOTHER_TRANSACTION_DATE);
+    }
+
     public static TransactionDocumentEntity.TransactionDocumentEntityBuilder transactionDocument() {
         return TransactionDocumentEntity.builder().amount(TRANSACTION_AMOUNT).balance(BudgetUtils.BUDGET_AMOUNT).note(TRANSACTION_NOTE).timestamp(TRANSACTION_DATE);
     }
