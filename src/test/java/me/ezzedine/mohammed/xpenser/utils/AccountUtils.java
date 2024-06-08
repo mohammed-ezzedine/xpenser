@@ -2,9 +2,12 @@ package me.ezzedine.mohammed.xpenser.utils;
 
 import me.ezzedine.mohammed.xpenser.core.account.opening.AccountOpenedEvent;
 import me.ezzedine.mohammed.xpenser.core.account.projection.summary.AccountSummary;
+import me.ezzedine.mohammed.xpenser.core.account.transactions.query.AccountTransactionSummary;
 import me.ezzedine.mohammed.xpenser.infra.persistence.account.AccountSummaryDocument;
+import me.ezzedine.mohammed.xpenser.infra.persistence.account.transaction.AccountTransactionsDocument;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.Mockito.mock;
@@ -35,5 +38,17 @@ public class AccountUtils {
 
     public static AccountOpenedEvent accountOpenedEvent() {
         return new AccountOpenedEvent(ACCOUNT_ID, ACCOUNT_NAME, BudgetUtils.budget(), ACCOUNT_CREATION_DATE);
+    }
+
+    public static AccountTransactionSummary.AccountTransactionSummaryBuilder accountTransactionsSummary() {
+        return AccountTransactionSummary.builder().id(ACCOUNT_ID).transactions(List.of(TransactionUtils.transactionSummary().build()));
+    }
+
+    public static AccountTransactionsDocument.AccountTransactionsDocumentBuilder accountTransactionsDocument() {
+        return AccountTransactionsDocument.builder().id(ACCOUNT_ID).transactions(List.of(TransactionUtils.transactionDocument().build()));
+    }
+
+    public static AccountTransactionsDocument.AccountTransactionsDocumentBuilder anotherAccountTransactionsDocument() {
+        return AccountTransactionsDocument.builder().id(ANOTHER_ACCOUNT_ID).transactions(List.of(TransactionUtils.anotherTransactionDocument().build()));
     }
 }

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class TransactionIdGeneratorTest {
+class TransactionDocumentEntityIdGeneratorTest {
 
     @Test
     @DisplayName("generates a non null id")
