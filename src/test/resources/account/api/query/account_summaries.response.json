@@ -3,11 +3,7 @@
     "id": "account-id",
     "name": "account-name",
     "budget": {
-      "currency": {
-        "code": "currency-code",
-        "symbol": "currency-symbol",
-        "name": "currency-name"
-      },
+      "currencyCode": "EUR",
       "amount": 14.5
     }
   }

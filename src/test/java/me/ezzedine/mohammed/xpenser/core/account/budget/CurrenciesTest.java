@@ -13,7 +13,7 @@ class CurrenciesTest {
     @DisplayName("it returns the correct representation of the dollar currency")
     void it_returns_the_correct_representation_of_the_dollar_currency() {
         Currency dollar = Currencies.dollar();
-        assertEquals(CurrencyCode.DOLLAR, dollar.code());
+        assertEquals(CurrencyCode.USD, dollar.code());
         assertEquals("$", dollar.symbol());
         assertEquals("United States Dollar", dollar.name());
     }
@@ -22,7 +22,7 @@ class CurrenciesTest {
     @DisplayName("it returns the correct representation of the euro currency")
     void it_returns_the_correct_representation_of_the_euro_currency() {
         Currency euro = Currencies.euro();
-        assertEquals(CurrencyCode.EURO, euro.code());
+        assertEquals(CurrencyCode.EUR, euro.code());
         assertEquals("€", euro.symbol());
         assertEquals("Euro", euro.name());
     }
@@ -31,7 +31,7 @@ class CurrenciesTest {
     @DisplayName("it returns the correct representation of the swiss franc currency")
     void it_returns_the_correct_representation_of_the_swiss_franc_currency() {
         Currency swissFranc = Currencies.swissFranc();
-        assertEquals(CurrencyCode.SWISS_FRANC, swissFranc.code());
+        assertEquals(CurrencyCode.CHF, swissFranc.code());
         assertEquals("CHF", swissFranc.symbol());
         assertEquals("Swiss Franc", swissFranc.name());
     }
@@ -40,7 +40,7 @@ class CurrenciesTest {
     @DisplayName("it returns the correct representation of the lebanese lira currency")
     void it_returns_the_correct_representation_of_the_lebanese_lira_currency() {
         Currency lebaneseLira = Currencies.lebaneseLira();
-        assertEquals(CurrencyCode.LEBANESE_LIRA, lebaneseLira.code());
+        assertEquals(CurrencyCode.LBP, lebaneseLira.code());
         assertEquals("LBP", lebaneseLira.symbol());
         assertEquals("Lebanese Lira", lebaneseLira.name());
     }
@@ -49,6 +49,6 @@ class CurrenciesTest {
     @EnumSource(CurrencyCode.class)
     @DisplayName("it returns the correct currency given its code")
     void it_returns_the_correct_currency_given_its_code(CurrencyCode code) {
-        assertEquals(code, Currencies.fromCode(code.getValue()).code());
+        assertEquals(code, Currencies.fromCode(code.toString()).code());
     }
 }

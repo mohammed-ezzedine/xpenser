@@ -3,9 +3,7 @@ package me.ezzedine.mohammed.xpenser.api.account.transactions.query;
 import me.ezzedine.mohammed.xpenser.api.account.ResourceUtils;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.query.FetchAccountTransactionsQuery;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.query.TransactionSummary;
-import org.axonframework.messaging.responsetypes.ResponseType;
-import org.axonframework.messaging.responsetypes.ResponseTypes;
-import org.axonframework.queryhandling.QueryGateway;
+import org.axonframework.extensions.reactor.queryhandling.gateway.ReactorQueryGateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -14,12 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Date;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -32,7 +29,7 @@ class AccountTransactionsQueryControllerIntegrationTest {
     private WebTestClient testClient;
 
     @MockBean
-    private QueryGateway queryGateway;
+    private ReactorQueryGateway queryGateway;
 
     @Nested
     @DisplayName("When fetching the transactions of an account")
@@ -40,8 +37,8 @@ class AccountTransactionsQueryControllerIntegrationTest {
 
         @BeforeEach
         void setUp() {
-            when(queryGateway.query(any(), any(ResponseType.class))).thenReturn(CompletableFuture.completedFuture(List.of(
-                    new TransactionSummary(BigDecimal.valueOf(14.3), BigDecimal.valueOf(20.3), "transaction-summary", Date.from(Instant.parse("2024-05-25T16:04:47.073Z"))))));
+            when(queryGateway.streamingQuery(any(), any())).thenReturn(Flux.just(
+                    new TransactionSummary(BigDecimal.valueOf(14.3), BigDecimal.valueOf(20.3), "transaction-summary", Date.from(Instant.parse("2024-05-25T16:04:47.073Z")))));
         }
 
         @Test
@@ -51,7 +48,7 @@ class AccountTransactionsQueryControllerIntegrationTest {
                     .uri("/accounts/id/transactions")
                     .exchange();
 
-            verify(queryGateway).query(new FetchAccountTransactionsQuery("id"), ResponseTypes.multipleInstancesOf(TransactionSummary.class));
+            verify(queryGateway).streamingQuery(new FetchAccountTransactionsQuery("id"), TransactionSummary.class);
         }
 
         @Test

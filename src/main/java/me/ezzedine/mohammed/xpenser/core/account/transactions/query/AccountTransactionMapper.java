@@ -4,7 +4,7 @@ import me.ezzedine.mohammed.xpenser.core.account.opening.AccountOpenedEvent;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface AccountTransactionMapper {
 
     @Mapping(target = "amount", source = "budget.amount")

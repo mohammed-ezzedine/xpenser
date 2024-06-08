@@ -16,13 +16,13 @@ class CurrencyCodeTest {
     @EnumSource(CurrencyCode.class)
     @DisplayName("returns the correct currency given its code")
     void returns_the_correct_currency_given_its_code(CurrencyCode code) {
-        assertEquals(code, CurrencyCode.fromString(code.getValue()));
+        assertEquals(code, CurrencyCode.valueOf(code.toString()));
     }
 
     @Test
     @DisplayName("throws an exception when the code is not recognized")
     void throws_an_exception_when_the_code_is_not_recognized() {
-        assertThrows(RuntimeException.class, () -> CurrencyCode.fromString(UUID.randomUUID().toString()));
+        assertThrows(RuntimeException.class, () -> CurrencyCode.valueOf(UUID.randomUUID().toString()));
     }
 
 }

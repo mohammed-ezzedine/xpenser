@@ -1,13 +1,11 @@
 package me.ezzedine.mohammed.xpenser.api.account.query;
 
 import me.ezzedine.mohammed.xpenser.api.account.ResourceUtils;
+import me.ezzedine.mohammed.xpenser.core.account.budget.CurrencyCode;
 import me.ezzedine.mohammed.xpenser.core.account.projection.summary.AccountSummary;
 import me.ezzedine.mohammed.xpenser.core.account.projection.summary.BudgetSummary;
 import me.ezzedine.mohammed.xpenser.core.account.projection.summary.FetchAccountSummariesQuery;
-import me.ezzedine.mohammed.xpenser.utils.CurrencyUtils;
-import org.axonframework.messaging.responsetypes.ResponseType;
-import org.axonframework.messaging.responsetypes.ResponseTypes;
-import org.axonframework.queryhandling.QueryGateway;
+import org.axonframework.extensions.reactor.queryhandling.gateway.ReactorQueryGateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,10 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -32,7 +29,7 @@ class AccountQueryControllerIntegrationTest {
     private WebTestClient testClient;
 
     @MockBean
-    private QueryGateway queryGateway;
+    private ReactorQueryGateway queryGateway;
 
     @Nested
     @DisplayName("When the user wants to fetch the list of account summaries")
@@ -40,8 +37,8 @@ class AccountQueryControllerIntegrationTest {
 
         @BeforeEach
         void setUp() {
-            AccountSummary accountSummary = new AccountSummary("account-id", "account-name", new BudgetSummary(CurrencyUtils.CURRENCY_CODE, BigDecimal.valueOf(14.5)));
-            when(queryGateway.query(any(), any(ResponseType.class))).thenReturn(CompletableFuture.completedFuture(List.of(accountSummary)));
+            AccountSummary accountSummary = new AccountSummary("account-id", "account-name", new BudgetSummary(CurrencyCode.EUR, BigDecimal.valueOf(14.5)));
+            when(queryGateway.streamingQuery(any(), any())).thenReturn(Flux.just(accountSummary));
         }
 
         @Test
@@ -53,7 +50,7 @@ class AccountQueryControllerIntegrationTest {
                     .expectStatus()
                     .is2xxSuccessful();
 
-            verify(queryGateway).query(new FetchAccountSummariesQuery(), ResponseTypes.multipleInstancesOf(AccountSummary.class));
+            verify(queryGateway).streamingQuery(new FetchAccountSummariesQuery(), AccountSummary.class);
         }
 
         @Test

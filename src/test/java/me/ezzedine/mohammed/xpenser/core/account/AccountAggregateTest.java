@@ -39,7 +39,7 @@ class AccountAggregateTest {
     @DisplayName("it should throw an error upon receiving an open account command with a negative initial budget")
     void it_should_throw_an_error_upon_receiving_an_open_account_command_with_a_negative_initial_budget() {
         testFixture.givenNoPriorActivity()
-                .when(new OpenAccountCommand(ACCOUNT_ID, ACCOUNT_NAME, CurrencyCode.LEBANESE_LIRA.getValue(), BigDecimal.valueOf(-3), timestamp))
+                .when(new OpenAccountCommand(ACCOUNT_ID, ACCOUNT_NAME, CurrencyCode.LBP.toString(), BigDecimal.valueOf(-3), timestamp))
                 .expectException(IllegalArgumentException.class);
     }
 
@@ -48,7 +48,7 @@ class AccountAggregateTest {
     void it_should_publish_an_account_opened_event_upon_receiving_an_open_account_command() {
         BigDecimal budgetInitialAmount = BigDecimal.valueOf(10);
         testFixture.givenNoPriorActivity()
-                .when(OpenAccountCommand.builder().name(ACCOUNT_NAME).id(ACCOUNT_ID).currencyCode(CurrencyCode.DOLLAR.getValue()).budgetInitialAmount(budgetInitialAmount).timestamp(timestamp).build())
+                .when(OpenAccountCommand.builder().name(ACCOUNT_NAME).id(ACCOUNT_ID).currencyCode(CurrencyCode.USD.toString()).budgetInitialAmount(budgetInitialAmount).timestamp(timestamp).build())
                 .expectSuccessfulHandlerExecution()
                 .expectEvents(new AccountOpenedEvent(ACCOUNT_ID, ACCOUNT_NAME, Budget.builder().currency(Currencies.dollar()).amount(budgetInitialAmount).build(), timestamp));
     }
@@ -165,6 +165,6 @@ class AccountAggregateTest {
     }
 
     private AccountOpenedEvent accountOpenedEvent() {
-        return new AccountOpenedEvent(ACCOUNT_ID, ACCOUNT_NAME, new Budget(new Currency(CurrencyCode.EURO, "EUR", "Euro"), INITIAL_AMOUNT), timestamp);
+        return new AccountOpenedEvent(ACCOUNT_ID, ACCOUNT_NAME, new Budget(new Currency(CurrencyCode.EUR, "EUR", "Euro"), INITIAL_AMOUNT), timestamp);
     }
 }

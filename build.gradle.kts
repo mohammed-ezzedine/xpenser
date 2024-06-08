@@ -27,6 +27,7 @@ dependencies {
     implementation("org.axonframework:axon-spring-boot-starter:4.9.3") {
         exclude("org.axonframework", "axon-server-connector")
     }
+    implementation("org.axonframework.extensions.reactor:axon-reactor-spring-boot-starter:4.9.0")
     implementation("org.axonframework.extensions.mongo:axon-mongo:4.9.0")
     implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.5.0")
     compileOnly("org.projectlombok:lombok")
