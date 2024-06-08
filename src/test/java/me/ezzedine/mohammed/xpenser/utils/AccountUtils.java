@@ -21,6 +21,10 @@ public class AccountUtils {
         return AccountSummary.builder().id(ACCOUNT_ID).name(ACCOUNT_NAME).budget(BudgetUtils.budgetSummary().build());
     }
 
+    public static AccountSummary.AccountSummaryBuilder anotherAccountSummary() {
+        return AccountSummary.builder().id(ANOTHER_ACCOUNT_ID).name(ANOTHER_ACCOUNT_NAME).budget(BudgetUtils.anotherBudgetSummary().build());
+    }
+
     public static AccountSummaryDocument.AccountSummaryDocumentBuilder accountSummaryDocument() {
         return AccountSummaryDocument.builder().id(ACCOUNT_ID).name(ACCOUNT_NAME).currencyCode(CurrencyUtils.CURRENCY_CODE.toString()).amount(BudgetUtils.BUDGET_AMOUNT);
     }

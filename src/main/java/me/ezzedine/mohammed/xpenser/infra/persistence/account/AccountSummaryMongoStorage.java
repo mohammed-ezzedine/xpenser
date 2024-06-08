@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.ezzedine.mohammed.xpenser.core.account.projection.summary.AccountSummary;
 import me.ezzedine.mohammed.xpenser.core.account.projection.summary.AccountSummaryStorage;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
@@ -21,5 +22,10 @@ public class AccountSummaryMongoStorage implements AccountSummaryStorage {
     @Override
     public Mono<AccountSummary> find(String id) {
         return repository.findById(id).map(mapper::map);
+    }
+
+    @Override
+    public Flux<AccountSummary> fetchAll() {
+        return repository.findAll().map(mapper::map);
     }
 }

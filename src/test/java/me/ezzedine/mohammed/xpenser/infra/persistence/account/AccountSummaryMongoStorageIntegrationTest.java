@@ -9,9 +9,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -86,6 +88,37 @@ class AccountSummaryMongoStorageIntegrationTest extends DatabaseIntegrationTest 
 
             StepVerifier.create(accountSummaryMono)
                     .assertNext(accountSummary ->  assertEquals(AccountUtils.accountSummary().build(), accountSummary))
+                    .expectComplete()
+                    .verify();
+        }
+    }
+
+    @Nested
+    @DisplayName("When fetching the list of all accounts")
+    class FetchingAll {
+
+        @Test
+        @DisplayName("it should return an empty list when none exist")
+        void it_should_return_an_empty_list_when_none_exist() {
+            Flux<AccountSummary> accountSummaryFlux = storage.fetchAll();
+
+            StepVerifier.create(accountSummaryFlux)
+                    .expectNextCount(0)
+                    .expectComplete()
+                    .verify();
+        }
+
+        @Test
+        @DisplayName("it should return the list of all accounts when some exist in the database")
+        void it_should_return_the_list_of_all_accounts_when_some_exist_in_the_database() {
+            repository.saveAll(List.of(
+                    AccountUtils.accountSummaryDocument().build(),
+                    AccountUtils.anotherAccountSummaryDocument().build())
+            ).blockLast();
+
+            Flux<AccountSummary> accountSummaryFlux = storage.fetchAll();
+            StepVerifier.create(accountSummaryFlux)
+                    .expectNext(AccountUtils.accountSummary().build(), AccountUtils.anotherAccountSummary().build())
                     .expectComplete()
                     .verify();
         }

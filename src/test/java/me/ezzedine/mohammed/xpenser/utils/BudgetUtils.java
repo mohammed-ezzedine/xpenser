@@ -18,4 +18,8 @@ public class BudgetUtils {
     public static BudgetSummary.BudgetSummaryBuilder budgetSummary() {
         return BudgetSummary.builder().currencyCode(CurrencyUtils.CURRENCY_CODE).amount(BUDGET_AMOUNT);
     }
+
+    public static BudgetSummary.BudgetSummaryBuilder anotherBudgetSummary() {
+        return BudgetSummary.builder().currencyCode(CurrencyUtils.ANOTHER_CURRENCY_CODE).amount(ANOTHER_BUDGET_AMOUNT);
+    }
 }
