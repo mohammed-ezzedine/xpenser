@@ -1,0 +1,8 @@
+{
+  "id": "{ACCOUNT_ID}",
+  "name": "{ACCOUNT_NAME}",
+  "budget": {
+    "currencyCode": "{CURRENCY_CODE}",
+    "amount": "{BUDGET_AMOUNT}"
+  }
+}

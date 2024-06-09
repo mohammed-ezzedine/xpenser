@@ -1,5 +1,6 @@
 package me.ezzedine.mohammed.xpenser.core.account.projection.summary;
 
+import me.ezzedine.mohammed.xpenser.core.account.AccountNotFoundException;
 import me.ezzedine.mohammed.xpenser.utils.AccountUtils;
 import me.ezzedine.mohammed.xpenser.utils.BudgetUtils;
 import me.ezzedine.mohammed.xpenser.utils.TransactionUtils;
@@ -62,6 +63,31 @@ class AccountSummaryProjectionTest {
         StepVerifier.create(accountSummaryFlux)
                 .expectNext(AccountUtils.accountSummary().build())
                 .expectComplete()
+                .verify();
+    }
+
+    @Test
+    @DisplayName("it should fetch the account summary from the store when handling fetch account summary query")
+    void it_should_fetch_the_account_summary_from_the_store_when_handling_fetch_account_summary_query() {
+        when(storage.find(AccountUtils.ACCOUNT_ID)).thenReturn(Mono.just(AccountUtils.accountSummary().build()));
+
+        Mono<AccountSummary> accountMono = projection.handle(new FetchAccountSummaryQuery(AccountUtils.ACCOUNT_ID));
+
+        StepVerifier.create(accountMono)
+                .expectNext(AccountUtils.accountSummary().build())
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    @DisplayName("it should throw an error when the account id is not found in the store")
+    void it_should_throw_an_error_when_the_account_id_is_not_found_in_the_store() {
+        when(storage.find(AccountUtils.ACCOUNT_ID)).thenReturn(Mono.empty());
+
+        Mono<AccountSummary> accountMono = projection.handle(new FetchAccountSummaryQuery(AccountUtils.ACCOUNT_ID));
+
+        StepVerifier.create(accountMono)
+                .expectError(AccountNotFoundException.class)
                 .verify();
     }
 }
