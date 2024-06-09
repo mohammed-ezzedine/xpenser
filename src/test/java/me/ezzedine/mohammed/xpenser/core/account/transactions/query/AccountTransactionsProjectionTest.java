@@ -1,5 +1,6 @@
 package me.ezzedine.mohammed.xpenser.core.account.transactions.query;
 
+import me.ezzedine.mohammed.xpenser.core.account.AccountNotFoundException;
 import me.ezzedine.mohammed.xpenser.utils.AccountUtils;
 import me.ezzedine.mohammed.xpenser.utils.BudgetUtils;
 import me.ezzedine.mohammed.xpenser.utils.TransactionUtils;
@@ -82,6 +83,18 @@ class AccountTransactionsProjectionTest {
         StepVerifier.create(accountTransactionsFlux)
                 .expectNext(TransactionUtils.transactionSummary().build())
                 .expectComplete()
+                .verify();
+    }
+
+    @Test
+    @DisplayName("it should throw an exception if the account does not exist when a fetch account transactions query is issued")
+    void it_should_throw_an_exception_if_the_account_does_not_exist_when_a_fetch_account_transactions_query_is_issued() {
+        when(storage.findById(AccountUtils.ACCOUNT_ID)).thenReturn(Mono.empty());
+
+        Flux<TransactionSummary> accountTransactionsFlux = projection.handle(new FetchAccountTransactionsQuery(AccountUtils.ACCOUNT_ID));
+
+        StepVerifier.create(accountTransactionsFlux)
+                .expectError(AccountNotFoundException.class)
                 .verify();
     }
 }

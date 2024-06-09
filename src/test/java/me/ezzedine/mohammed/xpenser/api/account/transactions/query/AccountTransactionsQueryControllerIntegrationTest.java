@@ -1,8 +1,10 @@
 package me.ezzedine.mohammed.xpenser.api.account.transactions.query;
 
 import me.ezzedine.mohammed.xpenser.api.account.ResourceUtils;
+import me.ezzedine.mohammed.xpenser.core.account.AccountNotFoundException;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.query.FetchAccountTransactionsQuery;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.query.TransactionSummary;
+import me.ezzedine.mohammed.xpenser.utils.AccountUtils;
 import org.axonframework.extensions.reactor.queryhandling.gateway.ReactorQueryGateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -61,6 +63,20 @@ class AccountTransactionsQueryControllerIntegrationTest {
                     .is2xxSuccessful()
                     .expectBody()
                     .json(ResourceUtils.resourceAsString("account/api/transactions/query/account_transactions.response.json"));
+        }
+
+        @Test
+        @DisplayName("it should return a status code 404 when the account does not exist")
+        void it_should_return_a_status_code_404_when_the_account_does_not_exist() {
+            when(queryGateway.streamingQuery(any(), any())).thenReturn(Flux.error(new AccountNotFoundException(AccountUtils.ACCOUNT_ID)));
+
+            testClient.get()
+                .uri("/accounts/%s/transactions".formatted(AccountUtils.ACCOUNT_ID))
+                .exchange()
+                .expectStatus()
+                .isNotFound()
+                .expectBody()
+                .json("\"Account '%s' does not exist.\"".formatted(AccountUtils.ACCOUNT_ID));
         }
     }
 
