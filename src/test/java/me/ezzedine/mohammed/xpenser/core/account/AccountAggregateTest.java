@@ -52,7 +52,7 @@ class AccountAggregateTest {
     void it_should_publish_a_debit_transaction_initiated_event_upon_receiving_a_debit_money_command() {
         testFixture.given(AccountUtils.accountOpenedEvent())
                 .when(TransactionUtils.depositMoneyCommand().build())
-                .expectEvents(TransactionUtils.moneyDepositedIntoAccountEvent());
+                .expectEvents(TransactionUtils.moneyDepositedIntoAccountEvent().build());
     }
 
     @Test
@@ -94,7 +94,7 @@ class AccountAggregateTest {
         testFixture.given(AccountUtils.accountOpenedEvent())
                 .when(TransactionUtils.withdrawMoneyCommand().build())
                 .expectSuccessfulHandlerExecution()
-                .expectEvents(TransactionUtils.moneyWithdrewFromAccountEvent());
+                .expectEvents(TransactionUtils.moneyWithdrewFromAccountEvent().build());
     }
 
     @Test
@@ -136,7 +136,7 @@ class AccountAggregateTest {
         testFixture.given(AccountUtils.accountOpenedEvent())
                 .when(TransactionUtils.transferMoneyCommand().build())
                 .expectSuccessfulHandlerExecution()
-                .expectEvents(TransactionUtils.moneyTransferInitiatedEvent());
+                .expectEvents(TransactionUtils.moneyTransferInitiatedEvent().build());
     }
 
 }

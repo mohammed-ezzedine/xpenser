@@ -15,16 +15,17 @@ public class TransactionUtils {
     public static final BigDecimal ANOTHER_TRANSACTION_AMOUNT = BudgetUtils.ANOTHER_BUDGET_AMOUNT.subtract(BigDecimal.TWO);
     public static final String TRANSACTION_NOTE = UUID.randomUUID().toString();
     public static final String ANOTHER_TRANSACTION_NOTE = UUID.randomUUID().toString();
-    private static final Date TRANSACTION_DATE = Date.from(Instant.parse("2024-06-08T14:02:52.651Z"));
-    private static final Date ANOTHER_TRANSACTION_DATE = Date.from(Instant.parse("2025-07-09T13:01:53.237Z"));
+    public static final Date TRANSACTION_DATE = Date.from(Instant.parse("2024-06-08T14:02:52.651Z"));
+    public static final Date ANOTHER_TRANSACTION_DATE = Date.from(Instant.parse("2025-07-09T13:01:53.237Z"));
 
     public static DepositMoneyCommand.DepositMoneyCommandBuilder depositMoneyCommand() {
         return DepositMoneyCommand.builder().transactionId(TransactionUtils.TRANSACTION_ID).accountId(AccountUtils.ACCOUNT_ID)
                 .amount(TRANSACTION_AMOUNT).note(TRANSACTION_NOTE).timestamp(TRANSACTION_DATE);
     }
 
-    public static MoneyDepositedInAccountEvent moneyDepositedIntoAccountEvent() {
-        return new MoneyDepositedInAccountEvent(TRANSACTION_ID, AccountUtils.ACCOUNT_ID, TRANSACTION_AMOUNT, TRANSACTION_NOTE, TRANSACTION_DATE);
+    public static MoneyDepositedInAccountEvent.MoneyDepositedInAccountEventBuilder moneyDepositedIntoAccountEvent() {
+        return MoneyDepositedInAccountEvent.builder().transactionId(TRANSACTION_ID).accountId(AccountUtils.ACCOUNT_ID)
+                .amount(TRANSACTION_AMOUNT).note(TRANSACTION_NOTE).timestamp(TRANSACTION_DATE);
     }
 
     public static WithdrawMoneyCommand.WithdrawMoneyCommandBuilder withdrawMoneyCommand() {
@@ -32,8 +33,9 @@ public class TransactionUtils {
                 .amount(TRANSACTION_AMOUNT).note(TRANSACTION_NOTE).timestamp(TRANSACTION_DATE);
     }
 
-    public static MoneyWithdrewFromAccountEvent moneyWithdrewFromAccountEvent() {
-        return new MoneyWithdrewFromAccountEvent(TRANSACTION_ID, AccountUtils.ACCOUNT_ID, TRANSACTION_AMOUNT, TRANSACTION_NOTE, TRANSACTION_DATE);
+    public static MoneyWithdrewFromAccountEvent.MoneyWithdrewFromAccountEventBuilder moneyWithdrewFromAccountEvent() {
+        return MoneyWithdrewFromAccountEvent.builder().transactionId(TRANSACTION_ID).accountId(AccountUtils.ACCOUNT_ID)
+                .amount(TRANSACTION_AMOUNT).note(TRANSACTION_NOTE).timestamp(TRANSACTION_DATE);
     }
 
     public static TransferMoneyCommand.TransferMoneyCommandBuilder transferMoneyCommand() {
@@ -41,9 +43,9 @@ public class TransactionUtils {
                 .destinationAccountId(AccountUtils.ANOTHER_ACCOUNT_ID).amount(TRANSACTION_AMOUNT).timestamp(TRANSACTION_DATE);
     }
 
-    public static MoneyTransferInitiatedEvent moneyTransferInitiatedEvent() {
+    public static MoneyTransferInitiatedEvent.MoneyTransferInitiatedEventBuilder moneyTransferInitiatedEvent() {
         return MoneyTransferInitiatedEvent.builder().transactionId(TRANSACTION_ID).sourceAccountId(AccountUtils.ACCOUNT_ID)
-                .destinationAccountId(AccountUtils.ANOTHER_ACCOUNT_ID).amount(TRANSACTION_AMOUNT).timestamp(TRANSACTION_DATE).build();
+                .destinationAccountId(AccountUtils.ANOTHER_ACCOUNT_ID).amount(TRANSACTION_AMOUNT).timestamp(TRANSACTION_DATE);
     }
 
     public static TransactionSummary.TransactionSummaryBuilder transactionSummary() {

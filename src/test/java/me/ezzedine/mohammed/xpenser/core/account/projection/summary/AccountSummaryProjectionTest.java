@@ -38,7 +38,7 @@ class AccountSummaryProjectionTest {
     void it_should_update_the_amount_of_an_account_when_a_money_deposited_into_account_event_is_issued() {
         when(storage.find(AccountUtils.ACCOUNT_ID)).thenReturn(Mono.just(AccountUtils.accountSummary().build()));
 
-        projection.on(TransactionUtils.moneyDepositedIntoAccountEvent());
+        projection.on(TransactionUtils.moneyDepositedIntoAccountEvent().build());
 
         verify(storage).save(AccountUtils.accountSummary().budget(BudgetUtils.budgetSummary().amount(BudgetUtils.BUDGET_AMOUNT.add(TransactionUtils.TRANSACTION_AMOUNT)).build()).build());
     }
@@ -48,7 +48,7 @@ class AccountSummaryProjectionTest {
     void it_should_update_the_amount_of_an_account_when_a_money_withdrew_even_is_issued() {
         when(storage.find(AccountUtils.ACCOUNT_ID)).thenReturn(Mono.just(AccountUtils.accountSummary().build()));
 
-        projection.on(TransactionUtils.moneyWithdrewFromAccountEvent());
+        projection.on(TransactionUtils.moneyWithdrewFromAccountEvent().build());
 
         verify(storage).save(AccountUtils.accountSummary().budget(BudgetUtils.budgetSummary().amount(BudgetUtils.BUDGET_AMOUNT.subtract(TransactionUtils.TRANSACTION_AMOUNT)).build()).build());
     }

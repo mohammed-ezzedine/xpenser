@@ -1,7 +1,9 @@
 package me.ezzedine.mohammed.xpenser.api.account.transactions;
 
 import me.ezzedine.mohammed.xpenser.api.account.ResourceUtils;
-import me.ezzedine.mohammed.xpenser.core.account.transactions.*;
+import me.ezzedine.mohammed.xpenser.core.account.transactions.DateFactory;
+import me.ezzedine.mohammed.xpenser.core.account.transactions.TransactionIdGenerator;
+import me.ezzedine.mohammed.xpenser.utils.TransactionUtils;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,16 +16,15 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @WebFluxTest(AccountTransactionsController.class)
 class AccountTransactionsControllerIntegrationTest {
 
-    public static final String TRANSACTION_ID = "transaction-id";
     @Autowired
     private WebTestClient testClient;
 
@@ -33,14 +34,12 @@ class AccountTransactionsControllerIntegrationTest {
     private DateFactory dateFactory;
     @MockBean
     private TransactionIdGenerator transactionIdGenerator;
-    private Date currentDate;
 
     @BeforeEach
     void setUp() {
-        currentDate = mock(Date.class);
-        when(dateFactory.now()).thenReturn(currentDate);
+        when(dateFactory.now()).thenReturn(TransactionUtils.TRANSACTION_DATE);
         when(commandGateway.sendAndWait(any())).thenReturn(CompletableFuture.completedFuture(null));
-        when(transactionIdGenerator.generate()).thenReturn(Mono.just(TRANSACTION_ID));
+        when(transactionIdGenerator.generate()).thenReturn(Mono.just(TransactionUtils.TRANSACTION_ID));
     }
 
     @Test
@@ -54,7 +53,8 @@ class AccountTransactionsControllerIntegrationTest {
                 .expectStatus()
                 .is2xxSuccessful();
 
-        verify(commandGateway).sendAndWait(new DepositMoneyCommand(TRANSACTION_ID, "account-id", BigDecimal.valueOf(10), "message", currentDate));
+        verify(commandGateway).sendAndWait(TransactionUtils.depositMoneyCommand().accountId("account-id").amount(BigDecimal.valueOf(10))
+                .note("message").build());
     }
 
     @Test
@@ -68,7 +68,8 @@ class AccountTransactionsControllerIntegrationTest {
                 .expectStatus()
                 .is2xxSuccessful();
 
-        verify(commandGateway).sendAndWait(new WithdrawMoneyCommand(TRANSACTION_ID, "account-id", BigDecimal.valueOf(10), "message", currentDate));
+        verify(commandGateway).sendAndWait(TransactionUtils.withdrawMoneyCommand().accountId("account-id").amount(BigDecimal.valueOf(10))
+                .note("message").build());
     }
 
     @Test
@@ -82,7 +83,8 @@ class AccountTransactionsControllerIntegrationTest {
                 .expectStatus()
                 .is2xxSuccessful();
 
-        verify(commandGateway).sendAndWait(new TransferMoneyCommand("account-id", "destination-account-id", TRANSACTION_ID, BigDecimal.valueOf(10), currentDate));
+        verify(commandGateway).sendAndWait(TransactionUtils.transferMoneyCommand().sourceAccountId("account-id")
+                .destinationAccountId("destination-account-id").amount( BigDecimal.valueOf(10)).build());
     }
 
 

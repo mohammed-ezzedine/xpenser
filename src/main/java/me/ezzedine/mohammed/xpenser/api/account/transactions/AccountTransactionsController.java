@@ -18,7 +18,8 @@ public class AccountTransactionsController {
     @PostMapping("deposit")
     public Mono<Void> addMoneyToAccount(@PathVariable String id, @RequestBody AddMoneyToAccountApiRequest request) {
         return transactionIdGenerator.generate()
-                .map(transactionId -> new DepositMoneyCommand(transactionId, id, request.amount(), request.note(), dateFactory.now()))
+                .map(transactionId -> DepositMoneyCommand.builder().transactionId(transactionId).accountId(id).amount(request.amount())
+                        .note(request.note()).timestamp(dateFactory.now()).build())
                 .doOnNext(commandGateway::sendAndWait)
                 .then();
     }

@@ -40,7 +40,7 @@ class AccountTransactionsProjectionTest {
     void it_should_save_a_transaction_when_money_is_deposited_into_an_account() {
         when(storage.findById(AccountUtils.ACCOUNT_ID)).thenReturn(Mono.just(AccountUtils.accountTransactionsSummary().transactions(List.of(TransactionUtils.anotherTransactionSummary().build())).build()));
 
-        projection.on(TransactionUtils.moneyDepositedIntoAccountEvent());
+        projection.on(TransactionUtils.moneyDepositedIntoAccountEvent().build());
 
         verify(storage).save(AccountUtils.accountTransactionsSummary()
                 .transactions(
@@ -59,7 +59,7 @@ class AccountTransactionsProjectionTest {
     void it_should_save_a_transaction_when_money_is_withdrew_from_an_account() {
         when(storage.findById(AccountUtils.ACCOUNT_ID)).thenReturn(Mono.just(AccountUtils.accountTransactionsSummary().transactions(List.of(TransactionUtils.anotherTransactionSummary().build())).build()));
 
-        projection.on(TransactionUtils.moneyWithdrewFromAccountEvent());
+        projection.on(TransactionUtils.moneyWithdrewFromAccountEvent().build());
 
         verify(storage).save(AccountUtils.accountTransactionsSummary()
                 .transactions(
