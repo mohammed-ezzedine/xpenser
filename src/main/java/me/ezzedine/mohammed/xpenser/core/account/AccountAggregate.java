@@ -7,12 +7,15 @@ import me.ezzedine.mohammed.xpenser.core.account.budget.Budget;
 import me.ezzedine.mohammed.xpenser.core.account.opening.AccountOpenedEvent;
 import me.ezzedine.mohammed.xpenser.core.account.opening.OpenAccountCommand;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.*;
+import me.ezzedine.mohammed.xpenser.core.currency.exchange.CurrencyExchangeManager;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
@@ -53,10 +56,18 @@ public class AccountAggregate {
     }
 
     @CommandHandler
-    public void handle(DepositMoneyCommand command) {
+    public void handle(DepositMoneyCommand command, CurrencyExchangeManager currencyExchangeManager) {
         validateAmountIsGreaterThanZero(command.amount());
 
-        apply(new MoneyDepositedInAccountEvent(command.transactionId(), command.accountId(), command.amount(), command.note(), command.timestamp()));
+        MoneyDepositedInAccountEvent event = Optional.ofNullable(command.currencyCode())
+                .map(currency -> currencyExchangeManager.convert(command.amount(), currency, budget.getCurrency()))
+                .orElse(Mono.just(command.amount()))
+                .map(amount -> MoneyDepositedInAccountEvent.builder().transactionId(command.transactionId())
+                        .accountId(command.accountId()).amount(amount).note(command.note())
+                        .timestamp(command.timestamp()).build())
+                .block();
+
+        apply(event);
     }
     @EventSourcingHandler
     public void on(MoneyDepositedInAccountEvent event) {
@@ -68,7 +79,8 @@ public class AccountAggregate {
         validateAmountIsGreaterThanZero(command.amount());
         validateAmountCanBeWithdrewFromBudget(command.amount());
 
-        apply(new MoneyWithdrewFromAccountEvent(command.transactionId(), command.accountId(), command.amount(), command.note(), command.timestamp()));
+        apply(new MoneyWithdrewFromAccountEvent(command.transactionId(), command.accountId(), command.amount(), budget.getCurrency(),
+                command.note(), command.timestamp()));
     }
 
     @EventSourcingHandler

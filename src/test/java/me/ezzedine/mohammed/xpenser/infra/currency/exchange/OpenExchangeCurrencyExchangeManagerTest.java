@@ -28,7 +28,7 @@ class OpenExchangeCurrencyExchangeManagerTest {
 
     @BeforeEach
     void setUp() {
-        clientAndServer = startClientAndServer(8080);
+        clientAndServer = startClientAndServer();
 
         clientAndServer
                 .when(request()
@@ -41,7 +41,7 @@ class OpenExchangeCurrencyExchangeManagerTest {
 
         OpenExchangeConfiguration configuration = new OpenExchangeConfiguration();
         configuration.setAppId(APP_ID);
-        configuration.setBaseUri("http://localhost:8080/");
+        configuration.setBaseUri("http://localhost:%s/".formatted(clientAndServer.getPort()));
         currencyExchangeManager = new OpenExchangeCurrencyExchangeManager(configuration);
     }
 

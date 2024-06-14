@@ -39,7 +39,7 @@ public class TransferMoneySaga {
     @SagaEventHandler(associationProperty = "transactionId")
     public void on(MoneyWithdrewFromAccountEvent event) {
         this.commandGateway.sendAndWait(DepositMoneyCommand.builder().transactionId(transactionId).accountId(destinationAccountId)
-                .amount(amount).note("Internal Transfer").timestamp(timestamp).build());
+                .amount(amount).currencyCode(event.currency()).note("Internal Transfer").timestamp(timestamp).build());
     }
 
     @EndSaga

@@ -1,6 +1,7 @@
 package me.ezzedine.mohammed.xpenser.core.account.transactions;
 
 import me.ezzedine.mohammed.xpenser.utils.AccountUtils;
+import me.ezzedine.mohammed.xpenser.utils.CurrencyUtils;
 import me.ezzedine.mohammed.xpenser.utils.TransactionUtils;
 import org.axonframework.test.saga.SagaTestFixture;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +27,11 @@ class TransferMoneySagaTest {
         testFixture.givenAggregate(AccountUtils.ACCOUNT_ID)
                 .published(TransactionUtils.moneyTransferInitiatedEvent().build())
                 .whenPublishingA(TransactionUtils.moneyWithdrewFromAccountEvent().note("Internal Transfer").build())
-                .expectDispatchedCommands(TransactionUtils.depositMoneyCommand().accountId(AccountUtils.ANOTHER_ACCOUNT_ID).note("Internal Transfer").build());
+                .expectDispatchedCommands(TransactionUtils.depositMoneyCommand()
+                        .accountId(AccountUtils.ANOTHER_ACCOUNT_ID)
+                        .note("Internal Transfer")
+                        .currencyCode(CurrencyUtils.currencyCode())
+                        .build());
     }
 
     @Test

@@ -1,18 +1,33 @@
 package me.ezzedine.mohammed.xpenser.core.account;
 
+import me.ezzedine.mohammed.xpenser.core.currency.exchange.CurrencyExchangeManager;
 import me.ezzedine.mohammed.xpenser.utils.AccountUtils;
 import me.ezzedine.mohammed.xpenser.utils.BudgetUtils;
+import me.ezzedine.mohammed.xpenser.utils.CurrencyUtils;
 import me.ezzedine.mohammed.xpenser.utils.TransactionUtils;
 import org.axonframework.test.aggregate.AggregateTestFixture;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class AccountAggregateTest {
     private final AggregateTestFixture<AccountAggregate> testFixture = new AggregateTestFixture<>(AccountAggregate.class);
+
+    @BeforeEach
+    void setUp() {
+        CurrencyExchangeManager currencyExchangeManager = mock(CurrencyExchangeManager.class);
+        testFixture.registerInjectableResource(currencyExchangeManager);
+
+        when(currencyExchangeManager.convert(TransactionUtils.TRANSACTION_AMOUNT, CurrencyUtils.anotherCurrencyCode(), CurrencyUtils.currencyCode()))
+                .thenReturn(Mono.just(TransactionUtils.ANOTHER_TRANSACTION_AMOUNT));
+    }
 
     @Test
     @DisplayName("it should throw an error upon receiving an open account command with a negative initial budget")
@@ -32,27 +47,35 @@ class AccountAggregateTest {
     }
 
     @Test
-    @DisplayName("it should throw an exception when receiving a debit money command with a negative amount")
-    void it_should_throw_an_exception_when_receiving_a_debit_money_command_with_a_negative_amount() {
+    @DisplayName("it should throw an exception when receiving a deposit money command with a negative amount")
+    void it_should_throw_an_exception_when_receiving_a_deposit_money_command_with_a_negative_amount() {
         testFixture.given(AccountUtils.accountOpenedEvent())
                 .when(TransactionUtils.depositMoneyCommand().amount(BigDecimal.valueOf(-1)).build())
                 .expectException(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("it should throw an exception when receiving a debit money command with a zero amount")
-    void it_should_throw_an_exception_when_receiving_a_debit_money_command_with_a_zero_amount() {
+    @DisplayName("it should throw an exception when receiving a deposit money command with a zero amount")
+    void it_should_throw_an_exception_when_receiving_a_deposit_money_command_with_a_zero_amount() {
         testFixture.given(AccountUtils.accountOpenedEvent())
                 .when(TransactionUtils.depositMoneyCommand().amount(BigDecimal.ZERO).build())
                 .expectException(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("it should publish a debit transaction initiated event upon receiving a debit money command")
-    void it_should_publish_a_debit_transaction_initiated_event_upon_receiving_a_debit_money_command() {
+    @DisplayName("it should publish a money deposited event upon receiving a debit money command")
+    void it_should_publish_a_money_deposited_event_upon_receiving_a_debit_money_command() {
         testFixture.given(AccountUtils.accountOpenedEvent())
                 .when(TransactionUtils.depositMoneyCommand().build())
                 .expectEvents(TransactionUtils.moneyDepositedIntoAccountEvent().build());
+    }
+
+    @Test
+    @DisplayName("it should publish a money deposited event after converting the amount upon receiving a debit money command with a currency code specified")
+    void it_should_publish_a_money_deposited_event_after_converting_the_amount_upon_receiving_a_debit_money_command_with_a_currency_code_specified() {
+        testFixture.given(AccountUtils.accountOpenedEvent())
+                .when(TransactionUtils.depositMoneyCommand().currencyCode(CurrencyUtils.anotherCurrencyCode()).build())
+                .expectEvents(TransactionUtils.moneyDepositedIntoAccountEvent().amount(TransactionUtils.ANOTHER_TRANSACTION_AMOUNT).build());
     }
 
     @Test

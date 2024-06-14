@@ -36,11 +36,11 @@ public class OpenExchangeCurrencyExchangeManager implements CurrencyExchangeMana
                 .bodyToMono(OpenExchangeCurrencyRatesApiResponse.class);
 
         return exchangeRates.map(rates -> {
-            if (rates.base().equals(sourceCurrency)) {
+            if (rates.base().equals(sourceCurrency.name())) {
                 return convertFromBaseCurrency(amount, targetCurrency, rates);
             }
 
-            if (rates.base().equals(targetCurrency)) {
+            if (rates.base().equals(targetCurrency.name())) {
                 return convertToBaseCurrency(amount, sourceCurrency, rates);
             }
 
@@ -50,10 +50,10 @@ public class OpenExchangeCurrencyExchangeManager implements CurrencyExchangeMana
     }
 
     private static BigDecimal convertFromBaseCurrency(BigDecimal amount, CurrencyCode targetCurrency, OpenExchangeCurrencyRatesApiResponse rates) {
-        return amount.multiply(BigDecimal.valueOf(rates.rates().get(targetCurrency)));
+        return amount.multiply(BigDecimal.valueOf(rates.rates().get(targetCurrency.name())));
     }
 
     private static BigDecimal convertToBaseCurrency(BigDecimal amount, CurrencyCode sourceCurrency, OpenExchangeCurrencyRatesApiResponse rates) {
-        return amount.divide(BigDecimal.valueOf(rates.rates().get(sourceCurrency)), RoundingMode.DOWN);
+        return amount.divide(BigDecimal.valueOf(rates.rates().get(sourceCurrency.name())), RoundingMode.DOWN);
     }
 }
