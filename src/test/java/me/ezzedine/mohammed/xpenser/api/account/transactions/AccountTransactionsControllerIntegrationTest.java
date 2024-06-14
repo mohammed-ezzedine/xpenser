@@ -54,7 +54,7 @@ class AccountTransactionsControllerIntegrationTest {
                 .expectStatus()
                 .is2xxSuccessful();
 
-        verify(commandGateway).send(new DepositMoneyCommand(TRANSACTION_ID, "account-id", BigDecimal.valueOf(10), "message", currentDate));
+        verify(commandGateway).sendAndWait(new DepositMoneyCommand(TRANSACTION_ID, "account-id", BigDecimal.valueOf(10), "message", currentDate));
     }
 
     @Test
@@ -68,7 +68,7 @@ class AccountTransactionsControllerIntegrationTest {
                 .expectStatus()
                 .is2xxSuccessful();
 
-        verify(commandGateway).send(new WithdrawMoneyCommand(TRANSACTION_ID, "account-id", BigDecimal.valueOf(10), "message", currentDate));
+        verify(commandGateway).sendAndWait(new WithdrawMoneyCommand(TRANSACTION_ID, "account-id", BigDecimal.valueOf(10), "message", currentDate));
     }
 
     @Test
@@ -82,7 +82,7 @@ class AccountTransactionsControllerIntegrationTest {
                 .expectStatus()
                 .is2xxSuccessful();
 
-        verify(commandGateway).send(new TransferMoneyCommand("account-id", "destination-account-id", TRANSACTION_ID, BigDecimal.valueOf(10), currentDate));
+        verify(commandGateway).sendAndWait(new TransferMoneyCommand("account-id", "destination-account-id", TRANSACTION_ID, BigDecimal.valueOf(10), currentDate));
     }
 
 

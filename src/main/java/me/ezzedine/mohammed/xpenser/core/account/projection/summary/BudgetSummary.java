@@ -3,7 +3,7 @@ package me.ezzedine.mohammed.xpenser.core.account.projection.summary;
 import lombok.Builder;
 import lombok.NonNull;
 import me.ezzedine.mohammed.xpenser.core.account.budget.Budget;
-import me.ezzedine.mohammed.xpenser.core.account.budget.CurrencyCode;
+import me.ezzedine.mohammed.xpenser.core.currency.CurrencyCode;
 
 import java.math.BigDecimal;
 
@@ -14,6 +14,6 @@ public record BudgetSummary(
 ) {
 
     public static BudgetSummary from(Budget budget) {
-        return new BudgetSummary(budget.getCurrency().code(), budget.getAmount());
+        return new BudgetSummary(budget.getCurrency(), budget.getAmount());
     }
 }

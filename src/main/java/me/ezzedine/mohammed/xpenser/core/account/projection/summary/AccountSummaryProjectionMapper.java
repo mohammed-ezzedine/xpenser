@@ -7,7 +7,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface AccountSummaryProjectionMapper {
 
-    @Mapping(target = "budget.currencyCode", source = "budget.currency.code")
+    @Mapping(target = "budget.currencyCode", source = "budget.currency")
     @Mapping(target = "budget.amount", source = "budget.amount")
     AccountSummary map(AccountOpenedEvent event);
 }

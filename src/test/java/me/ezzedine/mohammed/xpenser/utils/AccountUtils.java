@@ -1,6 +1,7 @@
 package me.ezzedine.mohammed.xpenser.utils;
 
 import me.ezzedine.mohammed.xpenser.core.account.opening.AccountOpenedEvent;
+import me.ezzedine.mohammed.xpenser.core.account.opening.OpenAccountCommand;
 import me.ezzedine.mohammed.xpenser.core.account.projection.summary.AccountSummary;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.query.AccountTransactionSummary;
 import me.ezzedine.mohammed.xpenser.infra.persistence.account.AccountSummaryDocument;
@@ -29,11 +30,16 @@ public class AccountUtils {
     }
 
     public static AccountSummaryDocument.AccountSummaryDocumentBuilder accountSummaryDocument() {
-        return AccountSummaryDocument.builder().id(ACCOUNT_ID).name(ACCOUNT_NAME).currencyCode(CurrencyUtils.CURRENCY_CODE.toString()).amount(BudgetUtils.BUDGET_AMOUNT);
+        return AccountSummaryDocument.builder().id(ACCOUNT_ID).name(ACCOUNT_NAME).currencyCode(CurrencyUtils.currencyCode()).amount(BudgetUtils.BUDGET_AMOUNT);
     }
 
     public static AccountSummaryDocument.AccountSummaryDocumentBuilder anotherAccountSummaryDocument() {
-        return AccountSummaryDocument.builder().id(ANOTHER_ACCOUNT_ID).name(ANOTHER_ACCOUNT_NAME).currencyCode(CurrencyUtils.ANOTHER_CURRENCY_CODE.toString()).amount(BudgetUtils.ANOTHER_BUDGET_AMOUNT);
+        return AccountSummaryDocument.builder().id(ANOTHER_ACCOUNT_ID).name(ANOTHER_ACCOUNT_NAME).currencyCode(CurrencyUtils.anotherCurrencyCode()).amount(BudgetUtils.ANOTHER_BUDGET_AMOUNT);
+    }
+
+    public static OpenAccountCommand.OpenAccountCommandBuilder openAccountCommand() {
+        return OpenAccountCommand.builder().name(AccountUtils.ACCOUNT_NAME).id(AccountUtils.ACCOUNT_ID)
+                .currencyCode(CurrencyUtils.currencyCode()).budgetInitialAmount(BudgetUtils.BUDGET_AMOUNT).timestamp(ACCOUNT_CREATION_DATE);
     }
 
     public static AccountOpenedEvent accountOpenedEvent() {

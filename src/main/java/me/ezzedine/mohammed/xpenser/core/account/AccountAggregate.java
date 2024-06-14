@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.ezzedine.mohammed.xpenser.core.account.budget.Budget;
-import me.ezzedine.mohammed.xpenser.core.account.budget.Currencies;
 import me.ezzedine.mohammed.xpenser.core.account.opening.AccountOpenedEvent;
 import me.ezzedine.mohammed.xpenser.core.account.opening.OpenAccountCommand;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.*;
@@ -38,7 +37,7 @@ public class AccountAggregate {
                 command.id(),
                 command.name(),
                 Budget.builder()
-                        .currency(Currencies.fromCode(command.currencyCode()))
+                        .currency(command.currencyCode())
                         .amount(command.budgetInitialAmount())
                         .build(),
                 command.timestamp()

@@ -4,6 +4,7 @@ import me.ezzedine.mohammed.xpenser.api.account.ResourceUtils;
 import me.ezzedine.mohammed.xpenser.core.account.opening.AccountIdGenerator;
 import me.ezzedine.mohammed.xpenser.core.account.opening.OpenAccountCommand;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.DateFactory;
+import me.ezzedine.mohammed.xpenser.core.currency.CurrencyCode;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -65,10 +66,10 @@ class AccountOpeningControllerIntegrationTest {
                     .expectStatus()
                     .is2xxSuccessful();
 
-            verify(commandGateway).send(OpenAccountCommand.builder()
+            verify(commandGateway).sendAndWait(OpenAccountCommand.builder()
                     .name("account-name")
                     .id(ACCOUNT_ID)
-                    .currencyCode("currency-code")
+                    .currencyCode(CurrencyCode.USD)
                     .budgetInitialAmount(BigDecimal.valueOf(81.0))
                     .timestamp(currentDate).build());
         }
@@ -82,7 +83,7 @@ class AccountOpeningControllerIntegrationTest {
                     .bodyValue(ResourceUtils.resourceAsString("account/api/opening/open_account.request.json"))
                     .exchange()
                     .expectBody()
-                    .json(ResourceUtils.resourceAsString("account/api/opening/open_account.response.json").toString());
+                    .json(ResourceUtils.resourceAsString("account/api/opening/open_account.response.json"));
         }
     }
 

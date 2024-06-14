@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import me.ezzedine.mohammed.xpenser.core.currency.CurrencyCode;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
@@ -16,6 +17,6 @@ import java.math.BigDecimal;
 public class AccountSummaryDocument {
     private String id;
     private String name;
-    private String currencyCode;
+    private CurrencyCode currencyCode;
     private BigDecimal amount;
 }

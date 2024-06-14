@@ -2,11 +2,11 @@ package me.ezzedine.mohammed.xpenser.api.account.query;
 
 import me.ezzedine.mohammed.xpenser.api.account.ResourceUtils;
 import me.ezzedine.mohammed.xpenser.core.account.AccountNotFoundException;
-import me.ezzedine.mohammed.xpenser.core.account.budget.CurrencyCode;
 import me.ezzedine.mohammed.xpenser.core.account.projection.summary.AccountSummary;
 import me.ezzedine.mohammed.xpenser.core.account.projection.summary.BudgetSummary;
 import me.ezzedine.mohammed.xpenser.core.account.projection.summary.FetchAccountSummariesQuery;
 import me.ezzedine.mohammed.xpenser.core.account.projection.summary.FetchAccountSummaryQuery;
+import me.ezzedine.mohammed.xpenser.core.currency.CurrencyCode;
 import me.ezzedine.mohammed.xpenser.utils.AccountUtils;
 import me.ezzedine.mohammed.xpenser.utils.BudgetUtils;
 import me.ezzedine.mohammed.xpenser.utils.CurrencyUtils;
@@ -101,7 +101,7 @@ class AccountQueryControllerIntegrationTest {
                     .json(ResourceUtils.resourceAsString("account/api/query/account_summary.response.json")
                             .replace("{ACCOUNT_ID}", AccountUtils.ACCOUNT_ID)
                             .replace("{ACCOUNT_NAME}", AccountUtils.ACCOUNT_NAME)
-                            .replace("{CURRENCY_CODE}", CurrencyUtils.CURRENCY_CODE.name())
+                            .replace("{CURRENCY_CODE}", CurrencyUtils.currencyCode().name())
                             .replace("\"{BUDGET_AMOUNT}\"", BudgetUtils.BUDGET_AMOUNT.toString())
                     );
         }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import me.ezzedine.mohammed.xpenser.core.currency.CurrencyCode;
 
 import java.math.BigDecimal;
 
@@ -12,7 +13,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Budget {
-    private Currency currency;
+    private CurrencyCode currency;
     private BigDecimal amount;
 
     public boolean canWithdraw(BigDecimal amount) {
