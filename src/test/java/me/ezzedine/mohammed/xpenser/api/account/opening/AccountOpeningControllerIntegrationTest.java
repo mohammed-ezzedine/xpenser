@@ -44,7 +44,7 @@ class AccountOpeningControllerIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        when(commandGateway.send(any())).thenReturn(CompletableFuture.completedFuture(new Object()));
+        when(commandGateway.sendAndWait(any())).thenReturn(CompletableFuture.completedFuture(new Object()));
         when(idGenerator.generate()).thenReturn(Mono.just(ACCOUNT_ID));
         currentDate = mock(Date.class);
         when(dateFactory.now()).thenReturn(currentDate);

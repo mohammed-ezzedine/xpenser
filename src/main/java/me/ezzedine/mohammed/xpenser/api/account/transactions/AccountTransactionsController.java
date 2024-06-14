@@ -19,7 +19,7 @@ public class AccountTransactionsController {
     public Mono<Void> addMoneyToAccount(@PathVariable String id, @RequestBody AddMoneyToAccountApiRequest request) {
         return transactionIdGenerator.generate()
                 .map(transactionId -> new DepositMoneyCommand(transactionId, id, request.amount(), request.note(), dateFactory.now()))
-                .doOnNext(commandGateway::send)
+                .doOnNext(commandGateway::sendAndWait)
                 .then();
     }
 
@@ -27,7 +27,7 @@ public class AccountTransactionsController {
     public Mono<Void> withdrawMoneyFromAccount(@PathVariable String id, @RequestBody WithdrawMoneyToAccountApiRequest request) {
         return transactionIdGenerator.generate()
                 .map(transactionId -> new WithdrawMoneyCommand(transactionId, id, request.amount(), request.note(), dateFactory.now()))
-                .doOnNext(commandGateway::send)
+                .doOnNext(commandGateway::sendAndWait)
                 .then();
     }
 
@@ -35,7 +35,7 @@ public class AccountTransactionsController {
     public Mono<Void> transferMoneyFromAccount(@PathVariable String id, @RequestBody TransferMoneyApiRequest request) {
         return transactionIdGenerator.generate()
                 .map(transactionId -> new TransferMoneyCommand(id, request.destinationAccountId(), transactionId, request.amount(), dateFactory.now()))
-                .doOnNext(commandGateway::send)
+                .doOnNext(commandGateway::sendAndWait)
                 .then();
     }
 }

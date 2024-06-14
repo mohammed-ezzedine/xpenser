@@ -39,7 +39,7 @@ class AccountTransactionsControllerIntegrationTest {
     void setUp() {
         currentDate = mock(Date.class);
         when(dateFactory.now()).thenReturn(currentDate);
-        when(commandGateway.send(any())).thenReturn(CompletableFuture.completedFuture(null));
+        when(commandGateway.sendAndWait(any())).thenReturn(CompletableFuture.completedFuture(null));
         when(transactionIdGenerator.generate()).thenReturn(Mono.just(TRANSACTION_ID));
     }
 

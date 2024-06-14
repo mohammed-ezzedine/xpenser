@@ -36,7 +36,7 @@ public class AccountOpeningController {
                         .budgetInitialAmount(request.initialAmount())
                         .timestamp(dateFactory.now())
                         .build())
-                .doOnNext(commandGateway::send)
+                .doOnNext(commandGateway::sendAndWait)
                 .map(command -> new AccountIdentificationApiResponse(command.id()))
                 .onErrorStop()
                 .timeout(Duration.ofSeconds(5));
