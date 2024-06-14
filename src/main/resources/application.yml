@@ -9,3 +9,9 @@ spring:
       password: ${MONGO_DB_PASSWORD:password}
       authentication-database: ${MONGO_DB_AUTHENTICATION_DB:admin}
       database: ${MONGO_DB_DATABASE_NAME:xpenser}
+
+xpenser:
+  currency:
+    exchange:
+      base-uri: ${OPEN_EXCHANGE_API_BASE_URI:https://openexchangerates.org/api/}
+      app-id: ${OPEN_EXCHANGE_APP_ID}
