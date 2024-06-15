@@ -64,9 +64,10 @@ class AccountTransactionsProjectionTest {
         verify(storage).save(AccountUtils.accountTransactionsSummary()
                 .transactions(
                         List.of(
-                                TransactionUtils.transactionSummary().balance(
-                                        BudgetUtils.ANOTHER_BUDGET_AMOUNT.subtract(TransactionUtils.TRANSACTION_AMOUNT)
-                                ).build(),
+                                TransactionUtils.transactionSummary()
+                                        .amount(TransactionUtils.TRANSACTION_AMOUNT.negate())
+                                        .balance(BudgetUtils.ANOTHER_BUDGET_AMOUNT.subtract(TransactionUtils.TRANSACTION_AMOUNT))
+                                        .build(),
                                 TransactionUtils.anotherTransactionSummary().build()
                         )
                 )

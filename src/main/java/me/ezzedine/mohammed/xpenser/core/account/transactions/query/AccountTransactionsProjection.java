@@ -44,7 +44,7 @@ public class AccountTransactionsProjection {
         storage.findById(event.accountId())
                 .map(account -> {
                     ArrayList<TransactionSummary> updatedTransactions = new ArrayList<>();
-                    updatedTransactions.add(new TransactionSummary(event.amount(), account.transactions().getFirst().balance().subtract(event.amount()), event.note(), event.timestamp()));
+                    updatedTransactions.add(new TransactionSummary(event.amount().negate(), account.transactions().getFirst().balance().subtract(event.amount()), event.note(), event.timestamp()));
                     updatedTransactions.addAll(account.transactions());
                     return AccountTransactionSummary.builder().id(account.id()).transactions(updatedTransactions).build();
                 })
