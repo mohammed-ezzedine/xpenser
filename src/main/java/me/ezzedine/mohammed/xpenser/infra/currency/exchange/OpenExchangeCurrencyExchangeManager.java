@@ -2,51 +2,54 @@ package me.ezzedine.mohammed.xpenser.infra.currency.exchange;
 
 import me.ezzedine.mohammed.xpenser.core.currency.CurrencyCode;
 import me.ezzedine.mohammed.xpenser.core.currency.exchange.CurrencyExchangeManager;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 @Service
 public class OpenExchangeCurrencyExchangeManager implements CurrencyExchangeManager {
 
     private final OpenExchangeConfiguration configuration;
-    private final WebClient webClient;
+    private final RestTemplate restTemplate;
 
     public OpenExchangeCurrencyExchangeManager(OpenExchangeConfiguration configuration) {
         this.configuration = configuration;
-        webClient = WebClient.builder().baseUrl(configuration.getBaseUri()).build();
+        restTemplate = new RestTemplateBuilder().rootUri(configuration.getBaseUri()).build();
     }
 
     @Override
-    public Mono<BigDecimal> convert(BigDecimal amount, CurrencyCode sourceCurrency, CurrencyCode targetCurrency) {
+    public BigDecimal convert(BigDecimal amount, CurrencyCode sourceCurrency, CurrencyCode targetCurrency) {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            return Mono.error(new IllegalArgumentException("Value must be greater than zero"));
+            throw new IllegalArgumentException("Value must be greater than zero");
         }
 
         if (sourceCurrency == targetCurrency) {
-            return Mono.just(amount);
+            return amount;
         }
 
-        Mono<OpenExchangeCurrencyRatesApiResponse> exchangeRates = webClient.get()
-                .uri("latest.json?app_id=%s".formatted(configuration.getAppId()))
-                .retrieve()
-                .bodyToMono(OpenExchangeCurrencyRatesApiResponse.class);
+        OpenExchangeCurrencyRatesApiResponse rates = fetchCurrencyRates();
+        if (rates.base().equals(sourceCurrency.name())) {
+            return convertFromBaseCurrency(amount, targetCurrency, rates);
+        }
 
-        return exchangeRates.map(rates -> {
-            if (rates.base().equals(sourceCurrency.name())) {
-                return convertFromBaseCurrency(amount, targetCurrency, rates);
-            }
+        if (rates.base().equals(targetCurrency.name())) {
+            return convertToBaseCurrency(amount, sourceCurrency, rates);
+        }
 
-            if (rates.base().equals(targetCurrency.name())) {
-                return convertToBaseCurrency(amount, sourceCurrency, rates);
-            }
+        BigDecimal amountInBaseCurrency = convertToBaseCurrency(amount, sourceCurrency, rates);
+        return convertFromBaseCurrency(amountInBaseCurrency, targetCurrency, rates);
+    }
 
-            BigDecimal amountInBaseCurrency = convertToBaseCurrency(amount, sourceCurrency, rates);
-            return convertFromBaseCurrency(amountInBaseCurrency, targetCurrency, rates);
-        });
+    private OpenExchangeCurrencyRatesApiResponse fetchCurrencyRates() {
+        return Objects.requireNonNull(restTemplate.getForObject(getUrl(), OpenExchangeCurrencyRatesApiResponse.class));
+    }
+
+    private String getUrl() {
+        return "/latest.json?app_id=%s".formatted(configuration.getAppId());
     }
 
     private static BigDecimal convertFromBaseCurrency(BigDecimal amount, CurrencyCode targetCurrency, OpenExchangeCurrencyRatesApiResponse rates) {

@@ -1,8 +1,7 @@
 package me.ezzedine.mohammed.xpenser.api.account.transactions;
 
 import me.ezzedine.mohammed.xpenser.api.account.ResourceUtils;
-import me.ezzedine.mohammed.xpenser.core.account.transactions.DateFactory;
-import me.ezzedine.mohammed.xpenser.core.account.transactions.TransactionIdGenerator;
+import me.ezzedine.mohammed.xpenser.core.account.transactions.*;
 import me.ezzedine.mohammed.xpenser.utils.TransactionUtils;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,8 +52,9 @@ class AccountTransactionsControllerIntegrationTest {
                 .expectStatus()
                 .is2xxSuccessful();
 
-        verify(commandGateway).sendAndWait(TransactionUtils.depositMoneyCommand().accountId("account-id").amount(BigDecimal.valueOf(10))
-                .note("message").build());
+        DepositMoneyCommand command = TransactionUtils.depositMoneyCommand().accountId("account-id").amount(BigDecimal.valueOf(10))
+                .note("message").build();
+        verify(commandGateway).sendAndWait(command);
     }
 
     @Test
@@ -68,8 +68,9 @@ class AccountTransactionsControllerIntegrationTest {
                 .expectStatus()
                 .is2xxSuccessful();
 
-        verify(commandGateway).sendAndWait(TransactionUtils.withdrawMoneyCommand().accountId("account-id").amount(BigDecimal.valueOf(10))
-                .note("message").build());
+        WithdrawMoneyCommand command = TransactionUtils.withdrawMoneyCommand().accountId("account-id").amount(BigDecimal.valueOf(10))
+                .note("message").build();
+        verify(commandGateway).sendAndWait(command);
     }
 
     @Test
@@ -83,8 +84,9 @@ class AccountTransactionsControllerIntegrationTest {
                 .expectStatus()
                 .is2xxSuccessful();
 
-        verify(commandGateway).sendAndWait(TransactionUtils.transferMoneyCommand().sourceAccountId("account-id")
-                .destinationAccountId("destination-account-id").amount( BigDecimal.valueOf(10)).build());
+        TransferMoneyCommand command = TransactionUtils.transferMoneyCommand().sourceAccountId("account-id")
+                .destinationAccountId("destination-account-id").amount(BigDecimal.valueOf(10)).build();
+        verify(commandGateway).sendAndWait(command);
     }
 
 

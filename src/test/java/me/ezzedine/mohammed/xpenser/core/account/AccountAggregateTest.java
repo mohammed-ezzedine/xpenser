@@ -9,7 +9,6 @@ import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 
@@ -26,7 +25,7 @@ class AccountAggregateTest {
         testFixture.registerInjectableResource(currencyExchangeManager);
 
         when(currencyExchangeManager.convert(TransactionUtils.TRANSACTION_AMOUNT, CurrencyUtils.anotherCurrencyCode(), CurrencyUtils.currencyCode()))
-                .thenReturn(Mono.just(TransactionUtils.ANOTHER_TRANSACTION_AMOUNT));
+                .thenReturn(TransactionUtils.ANOTHER_TRANSACTION_AMOUNT);
     }
 
     @Test

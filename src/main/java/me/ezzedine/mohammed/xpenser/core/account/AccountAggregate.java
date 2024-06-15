@@ -11,8 +11,8 @@ import me.ezzedine.mohammed.xpenser.core.currency.exchange.CurrencyExchangeManag
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
+import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
-import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -59,15 +59,18 @@ public class AccountAggregate {
     public void handle(DepositMoneyCommand command, CurrencyExchangeManager currencyExchangeManager) {
         validateAmountIsGreaterThanZero(command.amount());
 
-        MoneyDepositedInAccountEvent event = Optional.ofNullable(command.currencyCode())
+        BigDecimal amount = Optional.ofNullable(command.currencyCode())
                 .map(currency -> currencyExchangeManager.convert(command.amount(), currency, budget.getCurrency()))
-                .orElse(Mono.just(command.amount()))
-                .map(amount -> MoneyDepositedInAccountEvent.builder().transactionId(command.transactionId())
-                        .accountId(command.accountId()).amount(amount).note(command.note())
-                        .timestamp(command.timestamp()).build())
-                .block();
+                .orElse(command.amount());
 
-        apply(event);
+        MoneyDepositedInAccountEvent event = MoneyDepositedInAccountEvent.builder()
+                .transactionId(command.transactionId())
+                .accountId(command.accountId())
+                .amount(amount)
+                .note(command.note())
+                .timestamp(command.timestamp())
+                .build();
+        AggregateLifecycle.apply(event);
     }
     @EventSourcingHandler
     public void on(MoneyDepositedInAccountEvent event) {
