@@ -20,7 +20,7 @@ public class ExpenseCategoryService {
     public Mono<ExpenseCategory> create(CreateExpenseCategoryRequest request) {
         return idGenerator.generate()
                 .map(id -> mapper.map(request, id))
-                .doOnNext(storage::save);
+                .flatMap(storage::save);
     }
 
     public Mono<ExpenseCategory> fetch(String id) {

@@ -28,7 +28,7 @@ class ExpenseCategoryServiceTest {
     @Test
     @DisplayName("it should save a new category in the storage upon receiving a request to create a new expense category")
     void it_should_save_a_new_category_in_the_storage_upon_receiving_a_request_to_create_a_new_expense_category() {
-        when(storage.save(any())).thenReturn(Mono.empty());
+        when(storage.save(any())).thenReturn(Mono.just(ExpenseCategoryUtils.expenseCategory().build()));
 
         Mono<ExpenseCategory> mono = expenseCategoryService.create(ExpenseCategoryUtils.createExpenseCategoryRequest().build());
         StepVerifier.create(mono)

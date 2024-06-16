@@ -5,6 +5,7 @@ import lombok.Builder;
 @Builder
 public record ExpenseCategoryApiModel(
     String id,
-    String name
+    String name,
+    String icon
 ) {
 }

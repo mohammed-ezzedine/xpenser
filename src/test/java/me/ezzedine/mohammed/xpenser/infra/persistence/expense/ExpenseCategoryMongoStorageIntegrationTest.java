@@ -62,6 +62,16 @@ class ExpenseCategoryMongoStorageIntegrationTest extends DatabaseIntegrationTest
                     .expectComplete()
                     .verify();
         }
+
+        @Test
+        @DisplayName("it should return the saved entity")
+        void it_should_return_the_saved_entity() {
+            Mono<ExpenseCategory> mono = storage.save(ExpenseCategoryUtils.expenseCategory().build());
+            StepVerifier.create(mono)
+                    .expectNext(ExpenseCategoryUtils.expenseCategory().build())
+                    .expectComplete()
+                    .verify();
+        }
     }
 
     @Nested

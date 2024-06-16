@@ -15,8 +15,8 @@ public class ExpenseCategoryMongoStorage implements ExpenseCategoryStorage {
     private final ExpenseCategoryDocumentMapper mapper;
 
     @Override
-    public Mono<Void> save(ExpenseCategory category) {
-        return repository.save(mapper.map(category)).then();
+    public Mono<ExpenseCategory> save(ExpenseCategory category) {
+        return repository.save(mapper.map(category)).map(mapper::map);
     }
 
     @Override

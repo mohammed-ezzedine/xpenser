@@ -5,7 +5,7 @@ import reactor.core.publisher.Mono;
 
 public interface ExpenseCategoryStorage {
 
-    Mono<Void> save(ExpenseCategory category);
+    Mono<ExpenseCategory> save(ExpenseCategory category);
     Mono<ExpenseCategory> fetch(String id);
     Flux<ExpenseCategory> fetchAll();
 }
