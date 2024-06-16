@@ -18,7 +18,7 @@ class TransferMoneySagaTest {
                 .whenAggregate(AccountUtils.ACCOUNT_ID)
                 .publishes(TransactionUtils.moneyTransferInitiatedEvent().build())
                 .expectAssociationWith("transactionId", TransactionUtils.TRANSACTION_ID)
-                .expectDispatchedCommands(TransactionUtils.withdrawMoneyCommand().note("Internal Transfer").build());
+                .expectDispatchedCommands(TransactionUtils.withdrawMoneyCommand().note("Internal Transfer").category(null).build());
     }
 
     @Test
@@ -26,7 +26,7 @@ class TransferMoneySagaTest {
     void it_should_issue_a_deposit_money_command_into_the_destination_account_upon_receiving_a_money_withdrew_from_the_source_account_event() {
         testFixture.givenAggregate(AccountUtils.ACCOUNT_ID)
                 .published(TransactionUtils.moneyTransferInitiatedEvent().build())
-                .whenPublishingA(TransactionUtils.moneyWithdrewFromAccountEvent().note("Internal Transfer").build())
+                .whenPublishingA(TransactionUtils.moneyWithdrewFromAccountEvent().note("Internal Transfer").category(null).build())
                 .expectDispatchedCommands(TransactionUtils.depositMoneyCommand()
                         .accountId(AccountUtils.ANOTHER_ACCOUNT_ID)
                         .note("Internal Transfer")

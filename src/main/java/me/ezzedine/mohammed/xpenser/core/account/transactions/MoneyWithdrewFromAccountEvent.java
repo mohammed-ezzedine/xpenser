@@ -14,5 +14,6 @@ public record MoneyWithdrewFromAccountEvent(
         @NonNull BigDecimal amount,
         @NonNull CurrencyCode currency,
         @NonNull String note,
+        String category,
         @NonNull Date timestamp
 ) { }

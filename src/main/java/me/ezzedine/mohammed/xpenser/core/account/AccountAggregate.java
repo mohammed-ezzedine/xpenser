@@ -82,8 +82,9 @@ public class AccountAggregate {
         validateAmountIsGreaterThanZero(command.amount());
         validateAmountCanBeWithdrewFromBudget(command.amount());
 
-        apply(new MoneyWithdrewFromAccountEvent(command.transactionId(), command.accountId(), command.amount(), budget.getCurrency(),
-                command.note(), command.timestamp()));
+        apply(MoneyWithdrewFromAccountEvent.builder().transactionId(command.transactionId()).accountId(command.accountId())
+                        .amount(command.amount()).currency(budget.getCurrency()).note(command.note())
+                .category(command.category()).timestamp(command.timestamp()).build());
     }
 
     @EventSourcingHandler

@@ -14,6 +14,7 @@ public record WithdrawMoneyCommand(
         @NonNull String accountId,
         @NonNull BigDecimal amount,
         @NonNull String note,
+        String category,
         @NonNull Date timestamp
 ) {
 }

@@ -5,6 +5,7 @@ import me.ezzedine.mohammed.xpenser.core.account.AccountNotFoundException;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.query.FetchAccountTransactionsQuery;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.query.TransactionSummary;
 import me.ezzedine.mohammed.xpenser.utils.AccountUtils;
+import me.ezzedine.mohammed.xpenser.utils.TransactionUtils;
 import org.axonframework.extensions.reactor.queryhandling.gateway.ReactorQueryGateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,10 +16,6 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
-
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.Date;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -37,10 +34,12 @@ class AccountTransactionsQueryControllerIntegrationTest {
     @DisplayName("When fetching the transactions of an account")
     class FetchingAccountTransactions {
 
+        private TransactionSummary transactionSummary;
+
         @BeforeEach
         void setUp() {
-            when(queryGateway.streamingQuery(any(), any())).thenReturn(Flux.just(
-                    new TransactionSummary(BigDecimal.valueOf(14.3), BigDecimal.valueOf(20.3), "transaction-summary", Date.from(Instant.parse("2024-05-25T16:04:47.073Z")))));
+            transactionSummary = TransactionUtils.transactionSummary().build();
+            when(queryGateway.streamingQuery(any(), any())).thenReturn(Flux.just(transactionSummary));
         }
 
         @Test
@@ -62,7 +61,13 @@ class AccountTransactionsQueryControllerIntegrationTest {
                     .expectStatus()
                     .is2xxSuccessful()
                     .expectBody()
-                    .json(ResourceUtils.resourceAsString("account/api/transactions/query/account_transactions.response.json"));
+                    .json(ResourceUtils.resourceAsString("account/api/transactions/query/account_transactions.response.json")
+                            .replace("\"{AMOUNT}\"", transactionSummary.amount().toString())
+                            .replace("\"{BALANCE}\"", transactionSummary.balance().toString())
+                            .replace("{NOTE}", transactionSummary.note())
+                            .replace("{CATEGORY}", transactionSummary.category())
+                            .replace("\"{TIMESTAMP}\"", String.valueOf(transactionSummary.timestamp().toInstant().toEpochMilli()))
+                    );
         }
 
         @Test

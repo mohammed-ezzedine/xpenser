@@ -1,8 +1,9 @@
 [
   {
-    "amount": 14.3,
-    "balance": 20.3,
-    "note": "transaction-summary",
-    "timestamp": 1716653087073
+    "amount": "{AMOUNT}",
+    "balance": "{BALANCE}",
+    "note": "{NOTE}",
+    "category": "{CATEGORY}",
+    "timestamp": "{TIMESTAMP}"
   }
 ]

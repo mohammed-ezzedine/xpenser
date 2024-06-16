@@ -31,7 +31,12 @@ public class AccountTransactionsProjection {
         storage.findById(event.accountId())
                 .map(account -> {
                     ArrayList<TransactionSummary> updatedTransactions = new ArrayList<>();
-                    updatedTransactions.add(new TransactionSummary(event.amount(), account.transactions().getFirst().balance().add(event.amount()), event.note(), event.timestamp()));
+                    TransactionSummary transactionSummary = TransactionSummary.builder()
+                            .amount(event.amount()).note(event.note())
+                            .balance(account.transactions().getFirst().balance().add(event.amount()))
+                            .timestamp(event.timestamp()).build();
+
+                    updatedTransactions.add(transactionSummary);
                     updatedTransactions.addAll(account.transactions());
                     return AccountTransactionSummary.builder().id(account.id()).transactions(updatedTransactions).build();
                 })
@@ -44,7 +49,11 @@ public class AccountTransactionsProjection {
         storage.findById(event.accountId())
                 .map(account -> {
                     ArrayList<TransactionSummary> updatedTransactions = new ArrayList<>();
-                    updatedTransactions.add(new TransactionSummary(event.amount().negate(), account.transactions().getFirst().balance().subtract(event.amount()), event.note(), event.timestamp()));
+                    TransactionSummary transactionSummary = TransactionSummary.builder()
+                            .amount(event.amount().negate()).note(event.note()).category(event.category())
+                            .balance(account.transactions().getFirst().balance().subtract(event.amount()))
+                            .timestamp(event.timestamp()).build();
+                    updatedTransactions.add(transactionSummary);
                     updatedTransactions.addAll(account.transactions());
                     return AccountTransactionSummary.builder().id(account.id()).transactions(updatedTransactions).build();
                 })

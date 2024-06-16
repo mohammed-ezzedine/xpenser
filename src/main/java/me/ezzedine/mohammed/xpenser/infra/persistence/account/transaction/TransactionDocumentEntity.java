@@ -16,5 +16,6 @@ public class TransactionDocumentEntity {
     private BigDecimal amount;
     private BigDecimal balance;
     private String note;
+    private String category;
     private Date timestamp;
 }

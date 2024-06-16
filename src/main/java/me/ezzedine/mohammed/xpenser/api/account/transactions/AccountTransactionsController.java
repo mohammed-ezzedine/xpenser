@@ -27,7 +27,8 @@ public class AccountTransactionsController {
     @PostMapping("withdraw")
     public Mono<Void> withdrawMoneyFromAccount(@PathVariable String id, @RequestBody WithdrawMoneyToAccountApiRequest request) {
         return transactionIdGenerator.generate()
-                .map(transactionId -> new WithdrawMoneyCommand(transactionId, id, request.amount(), request.note(), dateFactory.now()))
+                .map(transactionId -> WithdrawMoneyCommand.builder().transactionId(transactionId).accountId(id)
+                        .amount(request.amount()).note(request.note()).timestamp(dateFactory.now()).category(request.category()).build())
                 .doOnNext(commandGateway::sendAndWait)
                 .then();
     }

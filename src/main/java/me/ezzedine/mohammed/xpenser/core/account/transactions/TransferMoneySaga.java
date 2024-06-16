@@ -33,7 +33,8 @@ public class TransferMoneySaga {
         amount = event.amount();
         timestamp = event.timestamp();
 
-        this.commandGateway.sendAndWait(new WithdrawMoneyCommand(transactionId, sourceAccountId, amount, "Internal Transfer", timestamp));
+        this.commandGateway.sendAndWait(WithdrawMoneyCommand.builder().transactionId(transactionId).accountId(sourceAccountId)
+                .amount(amount).note("Internal Transfer").timestamp(timestamp).build());
     }
 
     @SagaEventHandler(associationProperty = "transactionId")

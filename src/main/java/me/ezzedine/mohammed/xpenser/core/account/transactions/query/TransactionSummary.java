@@ -11,6 +11,7 @@ public record TransactionSummary(
         @NonNull BigDecimal amount,
         @NonNull BigDecimal balance,
         @NonNull String note,
+        String category,
         @NonNull Date timestamp
 ) {
 }

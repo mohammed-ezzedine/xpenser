@@ -63,13 +63,13 @@ class AccountTransactionsControllerIntegrationTest {
         testClient.post()
                 .uri("/accounts/account-id/transactions/withdraw")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(ResourceUtils.resourceAsString("account/api/transactions/deposit_money.request.json"))
+                .bodyValue(ResourceUtils.resourceAsString("account/api/transactions/withdraw_money.request.json"))
                 .exchange()
                 .expectStatus()
                 .is2xxSuccessful();
 
         WithdrawMoneyCommand command = TransactionUtils.withdrawMoneyCommand().accountId("account-id").amount(BigDecimal.valueOf(10))
-                .note("message").build();
+                .category("some-category").note("message").build();
         verify(commandGateway).sendAndWait(command);
     }
 
