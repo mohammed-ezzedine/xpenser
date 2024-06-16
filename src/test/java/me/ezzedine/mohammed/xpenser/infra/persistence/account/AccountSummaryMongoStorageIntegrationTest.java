@@ -3,6 +3,7 @@ package me.ezzedine.mohammed.xpenser.infra.persistence.account;
 import me.ezzedine.mohammed.xpenser.core.account.projection.summary.AccountSummary;
 import me.ezzedine.mohammed.xpenser.infra.persistence.DatabaseIntegrationTest;
 import me.ezzedine.mohammed.xpenser.utils.AccountUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,11 @@ class AccountSummaryMongoStorageIntegrationTest extends DatabaseIntegrationTest 
     private AccountSummaryRepository repository;
     @Autowired
     private AccountSummaryMongoStorage storage;
+
+    @AfterEach
+    void tearDown() {
+        repository.deleteAll().block();
+    }
 
     @Nested
     @DisplayName("When saving an entity in the database")

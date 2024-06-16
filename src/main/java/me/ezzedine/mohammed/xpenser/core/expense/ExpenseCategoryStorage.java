@@ -1,0 +1,11 @@
+package me.ezzedine.mohammed.xpenser.core.expense;
+
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+public interface ExpenseCategoryStorage {
+
+    Mono<Void> save(ExpenseCategory category);
+    Mono<ExpenseCategory> fetch(String id);
+    Flux<ExpenseCategory> fetchAll();
+}

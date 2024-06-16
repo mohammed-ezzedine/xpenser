@@ -3,6 +3,7 @@ package me.ezzedine.mohammed.xpenser.infra.persistence.account.transaction;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.query.AccountTransactionSummary;
 import me.ezzedine.mohammed.xpenser.infra.persistence.DatabaseIntegrationTest;
 import me.ezzedine.mohammed.xpenser.utils.AccountUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,11 @@ class AccountTransactionsMongoStorageIntegrationTest extends DatabaseIntegration
     private AccountTransactionsRepository repository;
     @Autowired
     private AccountTransactionsMongoStorage storage;
+
+    @AfterEach
+    void tearDown() {
+        repository.deleteAll().block();
+    }
 
     @Nested
     @DisplayName("When saving the transactions of an account")
