@@ -7,5 +7,7 @@ import java.time.YearMonth;
 public interface MonthlyReportStorage {
     Mono<Void> save(MonthlyReport report);
     Mono<MonthlyReport> fetch(YearMonth yearMonth);
+    Mono<MonthlyReport> fetchFirstMonthReport();
+    Mono<MonthlyReport> fetchLastMonthReport();
 
 }

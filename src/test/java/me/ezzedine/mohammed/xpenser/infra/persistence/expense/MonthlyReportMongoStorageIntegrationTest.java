@@ -89,4 +89,54 @@ class MonthlyReportMongoStorageIntegrationTest extends DatabaseIntegrationTest {
                     .verifyComplete();
         }
     }
+
+    @Nested
+    @DisplayName("When fetching the first monthly report")
+    class FetchingFirstEntity {
+
+        @Test
+        @DisplayName("it should return an empty result when no entity exists for it")
+        void it_should_return_an_empty_result_when_no_entity_exists_for_it() {
+            Mono<MonthlyReport> mono = storage.fetchFirstMonthReport();
+            StepVerifier.create(mono).verifyComplete();
+        }
+
+        @Test
+        @DisplayName("it should return the oldest monthly report in time when multiple exist")
+        void it_should_return_the_oldest_monthly_report_in_time_when_multiple_exist() {
+            repository.save(MonthlyReportUtils.monthlyReportDocument().build()).block();
+            repository.save(MonthlyReportUtils.anotherMonthlyReportDocument().build()).block();
+
+            Mono<MonthlyReport> mono = storage.fetchFirstMonthReport();
+            StepVerifier.create(mono)
+                    .expectNext(MonthlyReportUtils.anotherMonthlyReport().build())
+                    .verifyComplete();
+        }
+
+    }
+
+    @Nested
+    @DisplayName("When fetching the last monthly report")
+    class FetchingLastEntity {
+
+        @Test
+        @DisplayName("it should return an empty result when no entity exists for it")
+        void it_should_return_an_empty_result_when_no_entity_exists_for_it() {
+            Mono<MonthlyReport> mono = storage.fetchLastMonthReport();
+            StepVerifier.create(mono).verifyComplete();
+        }
+
+        @Test
+        @DisplayName("it should return the oldest monthly report in time when multiple exist")
+        void it_should_return_the_oldest_monthly_report_in_time_when_multiple_exist() {
+            repository.save(MonthlyReportUtils.monthlyReportDocument().build()).block();
+            repository.save(MonthlyReportUtils.anotherMonthlyReportDocument().build()).block();
+
+            Mono<MonthlyReport> mono = storage.fetchLastMonthReport();
+            StepVerifier.create(mono)
+                    .expectNext(MonthlyReportUtils.monthlyReport().build())
+                    .verifyComplete();
+        }
+
+    }
 }

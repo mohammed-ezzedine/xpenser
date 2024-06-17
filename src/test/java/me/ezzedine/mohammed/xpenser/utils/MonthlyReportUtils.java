@@ -23,6 +23,10 @@ public class MonthlyReportUtils {
         return MonthlyReport.builder().month(MONTH).target(TARGET).incoming(INCOMING).expenses(EXPENSES);
     }
 
+    public static MonthlyReport.MonthlyReportBuilder anotherMonthlyReport() {
+        return MonthlyReport.builder().month(ANOTHER_MONTH).target(ANOTHER_TARGET).incoming(ANOTHER_INCOMING).expenses(ANOTHER_EXPENSES);
+    }
+
     public static MonthlyReportDocument.MonthlyReportDocumentBuilder monthlyReportDocument() {
         return MonthlyReportDocument.builder().month(MONTH).target(TARGET).incoming(INCOMING).expenses(EXPENSES);
     }

@@ -1,0 +1,10 @@
+{
+  "first": "{FIRST_MONTH}",
+  "last": "{LAST_MONTH}",
+  "report": {
+    "month": "{REPORT_MONTH}",
+    "incoming": "{REPORT_INCOMING}",
+    "expenses": "{REPORT_EXPENSES}",
+    "target": "{REPORT_TARGET}"
+  }
+}
