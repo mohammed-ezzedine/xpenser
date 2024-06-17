@@ -2,7 +2,9 @@ package me.ezzedine.mohammed.xpenser.utils;
 
 import me.ezzedine.mohammed.xpenser.core.account.transactions.*;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.query.TransactionSummary;
+import me.ezzedine.mohammed.xpenser.core.account.transactions.transfer.ActiveTransfer;
 import me.ezzedine.mohammed.xpenser.infra.persistence.account.transaction.TransactionDocumentEntity;
+import me.ezzedine.mohammed.xpenser.infra.persistence.account.transaction.transfer.ActiveTransferDocument;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -74,5 +76,13 @@ public class TransactionUtils {
     public static TransactionDocumentEntity.TransactionDocumentEntityBuilder anotherTransactionDocument() {
         return TransactionDocumentEntity.builder().amount(ANOTHER_TRANSACTION_AMOUNT).balance(BudgetUtils.ANOTHER_BUDGET_AMOUNT)
                 .category(ANOTHER_TRANSACTION_CATEGORY).note(ANOTHER_TRANSACTION_NOTE).timestamp(ANOTHER_TRANSACTION_DATE);
+    }
+
+    public static ActiveTransfer.ActiveTransferBuilder activeTransfer() {
+        return ActiveTransfer.builder().transactionId(TRANSACTION_ID);
+    }
+
+    public static ActiveTransferDocument.ActiveTransferDocumentBuilder activeTransferDocument() {
+        return ActiveTransferDocument.builder().transactionId(TRANSACTION_ID);
     }
 }
