@@ -1,4 +1,4 @@
-package me.ezzedine.mohammed.xpenser.core.expense;
+package me.ezzedine.mohammed.xpenser.core.expense.category;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

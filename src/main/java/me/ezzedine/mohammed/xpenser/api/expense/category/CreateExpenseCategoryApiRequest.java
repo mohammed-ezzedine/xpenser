@@ -1,4 +1,4 @@
-package me.ezzedine.mohammed.xpenser.api.expense;
+package me.ezzedine.mohammed.xpenser.api.expense.category;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;

@@ -1,6 +1,6 @@
-package me.ezzedine.mohammed.xpenser.infra.persistence.expense;
+package me.ezzedine.mohammed.xpenser.infra.persistence.expense.category;
 
-import me.ezzedine.mohammed.xpenser.core.expense.ExpenseCategory;
+import me.ezzedine.mohammed.xpenser.core.expense.category.ExpenseCategory;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

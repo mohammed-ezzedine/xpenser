@@ -1,9 +1,9 @@
 package me.ezzedine.mohammed.xpenser.utils;
 
-import me.ezzedine.mohammed.xpenser.api.expense.CreateExpenseCategoryApiRequest;
-import me.ezzedine.mohammed.xpenser.core.expense.CreateExpenseCategoryRequest;
-import me.ezzedine.mohammed.xpenser.core.expense.ExpenseCategory;
-import me.ezzedine.mohammed.xpenser.infra.persistence.expense.ExpenseCategoryDocument;
+import me.ezzedine.mohammed.xpenser.api.expense.category.CreateExpenseCategoryApiRequest;
+import me.ezzedine.mohammed.xpenser.core.expense.category.CreateExpenseCategoryRequest;
+import me.ezzedine.mohammed.xpenser.core.expense.category.ExpenseCategory;
+import me.ezzedine.mohammed.xpenser.infra.persistence.expense.category.ExpenseCategoryDocument;
 
 import java.util.UUID;
 

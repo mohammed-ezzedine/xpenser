@@ -1,5 +1,6 @@
 package me.ezzedine.mohammed.xpenser.infra.expense;
 
+import me.ezzedine.mohammed.xpenser.infra.expense.category.ExpenseCategoryUuidGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;

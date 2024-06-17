@@ -1,7 +1,9 @@
-package me.ezzedine.mohammed.xpenser.api.expense;
+package me.ezzedine.mohammed.xpenser.api.expense.category;
 
 import me.ezzedine.mohammed.xpenser.api.account.ResourceUtils;
-import me.ezzedine.mohammed.xpenser.core.expense.ExpenseCategoryService;
+import me.ezzedine.mohammed.xpenser.api.expense.ExpenseCategoryApiMapperImpl;
+import me.ezzedine.mohammed.xpenser.api.expense.category.ExpenseCategoryController;
+import me.ezzedine.mohammed.xpenser.core.expense.category.ExpenseCategoryService;
 import me.ezzedine.mohammed.xpenser.utils.ExpenseCategoryUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

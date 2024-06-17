@@ -1,8 +1,8 @@
-package me.ezzedine.mohammed.xpenser.infra.persistence.expense;
+package me.ezzedine.mohammed.xpenser.infra.persistence.expense.category;
 
 import lombok.RequiredArgsConstructor;
-import me.ezzedine.mohammed.xpenser.core.expense.ExpenseCategory;
-import me.ezzedine.mohammed.xpenser.core.expense.ExpenseCategoryStorage;
+import me.ezzedine.mohammed.xpenser.core.expense.category.ExpenseCategory;
+import me.ezzedine.mohammed.xpenser.core.expense.category.ExpenseCategoryStorage;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

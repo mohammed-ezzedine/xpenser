@@ -1,4 +1,4 @@
-package me.ezzedine.mohammed.xpenser.api.expense;
+package me.ezzedine.mohammed.xpenser.api.expense.category;
 
 import lombok.Builder;
 

@@ -1,7 +1,7 @@
-package me.ezzedine.mohammed.xpenser.api.expense;
+package me.ezzedine.mohammed.xpenser.api.expense.category;
 
-import me.ezzedine.mohammed.xpenser.core.expense.CreateExpenseCategoryRequest;
-import me.ezzedine.mohammed.xpenser.core.expense.ExpenseCategory;
+import me.ezzedine.mohammed.xpenser.core.expense.category.CreateExpenseCategoryRequest;
+import me.ezzedine.mohammed.xpenser.core.expense.category.ExpenseCategory;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

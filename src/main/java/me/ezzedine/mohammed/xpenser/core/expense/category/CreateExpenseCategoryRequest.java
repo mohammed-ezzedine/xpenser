@@ -1,11 +1,10 @@
-package me.ezzedine.mohammed.xpenser.core.expense;
+package me.ezzedine.mohammed.xpenser.core.expense.category;
 
 import lombok.Builder;
 import lombok.NonNull;
 
 @Builder
-public record ExpenseCategory(
-    @NonNull String id,
+public record CreateExpenseCategoryRequest(
     @NonNull String name,
     @NonNull String icon
 ) {

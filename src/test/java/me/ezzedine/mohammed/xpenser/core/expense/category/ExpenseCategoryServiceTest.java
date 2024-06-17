@@ -1,5 +1,10 @@
-package me.ezzedine.mohammed.xpenser.core.expense;
+package me.ezzedine.mohammed.xpenser.core.expense.category;
 
+import me.ezzedine.mohammed.xpenser.core.expense.ExpenseCategoryMapperImpl;
+import me.ezzedine.mohammed.xpenser.core.expense.category.ExpenseCategory;
+import me.ezzedine.mohammed.xpenser.core.expense.category.ExpenseCategoryIdGenerator;
+import me.ezzedine.mohammed.xpenser.core.expense.category.ExpenseCategoryService;
+import me.ezzedine.mohammed.xpenser.core.expense.category.ExpenseCategoryStorage;
 import me.ezzedine.mohammed.xpenser.utils.ExpenseCategoryUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

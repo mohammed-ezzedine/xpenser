@@ -1,7 +1,11 @@
-package me.ezzedine.mohammed.xpenser.infra.persistence.expense;
+package me.ezzedine.mohammed.xpenser.infra.persistence.expense.category;
 
-import me.ezzedine.mohammed.xpenser.core.expense.ExpenseCategory;
+import me.ezzedine.mohammed.xpenser.core.expense.category.ExpenseCategory;
 import me.ezzedine.mohammed.xpenser.infra.persistence.DatabaseIntegrationTest;
+import me.ezzedine.mohammed.xpenser.infra.persistence.expense.ExpenseCategoryDocumentMapperImpl;
+import me.ezzedine.mohammed.xpenser.infra.persistence.expense.category.ExpenseCategoryDocument;
+import me.ezzedine.mohammed.xpenser.infra.persistence.expense.category.ExpenseCategoryDocumentReactiveMonoRepository;
+import me.ezzedine.mohammed.xpenser.infra.persistence.expense.category.ExpenseCategoryMongoStorage;
 import me.ezzedine.mohammed.xpenser.utils.ExpenseCategoryUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;

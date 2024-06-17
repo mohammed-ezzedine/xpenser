@@ -1,6 +1,6 @@
-package me.ezzedine.mohammed.xpenser.infra.expense;
+package me.ezzedine.mohammed.xpenser.infra.expense.category;
 
-import me.ezzedine.mohammed.xpenser.core.expense.ExpenseCategoryIdGenerator;
+import me.ezzedine.mohammed.xpenser.core.expense.category.ExpenseCategoryIdGenerator;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 

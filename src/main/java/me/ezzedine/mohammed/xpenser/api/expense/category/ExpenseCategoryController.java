@@ -1,7 +1,7 @@
-package me.ezzedine.mohammed.xpenser.api.expense;
+package me.ezzedine.mohammed.xpenser.api.expense.category;
 
 import lombok.RequiredArgsConstructor;
-import me.ezzedine.mohammed.xpenser.core.expense.ExpenseCategoryService;
+import me.ezzedine.mohammed.xpenser.core.expense.category.ExpenseCategoryService;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
