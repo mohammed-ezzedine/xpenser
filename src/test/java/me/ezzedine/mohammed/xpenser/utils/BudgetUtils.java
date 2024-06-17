@@ -1,7 +1,7 @@
 package me.ezzedine.mohammed.xpenser.utils;
 
 import me.ezzedine.mohammed.xpenser.core.account.budget.Budget;
-import me.ezzedine.mohammed.xpenser.core.account.projection.summary.BudgetSummary;
+import me.ezzedine.mohammed.xpenser.core.account.summary.BudgetSummary;
 
 import java.math.BigDecimal;
 import java.util.Random;

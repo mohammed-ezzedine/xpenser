@@ -1,4 +1,4 @@
-package me.ezzedine.mohammed.xpenser.core.account.projection.summary;
+package me.ezzedine.mohammed.xpenser.core.account.summary;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

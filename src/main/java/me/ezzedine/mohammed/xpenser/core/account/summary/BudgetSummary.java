@@ -1,4 +1,4 @@
-package me.ezzedine.mohammed.xpenser.core.account.projection.summary;
+package me.ezzedine.mohammed.xpenser.core.account.summary;
 
 import lombok.Builder;
 import lombok.NonNull;

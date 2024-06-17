@@ -2,7 +2,7 @@ package me.ezzedine.mohammed.xpenser.utils;
 
 import me.ezzedine.mohammed.xpenser.core.account.opening.AccountOpenedEvent;
 import me.ezzedine.mohammed.xpenser.core.account.opening.OpenAccountCommand;
-import me.ezzedine.mohammed.xpenser.core.account.projection.summary.AccountSummary;
+import me.ezzedine.mohammed.xpenser.core.account.summary.AccountSummary;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.query.AccountTransactionSummary;
 import me.ezzedine.mohammed.xpenser.infra.persistence.account.AccountSummaryDocument;
 import me.ezzedine.mohammed.xpenser.infra.persistence.account.transaction.AccountTransactionsDocument;

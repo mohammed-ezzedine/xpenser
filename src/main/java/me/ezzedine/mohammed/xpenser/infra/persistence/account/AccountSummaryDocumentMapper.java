@@ -1,6 +1,6 @@
 package me.ezzedine.mohammed.xpenser.infra.persistence.account;
 
-import me.ezzedine.mohammed.xpenser.core.account.projection.summary.AccountSummary;
+import me.ezzedine.mohammed.xpenser.core.account.summary.AccountSummary;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

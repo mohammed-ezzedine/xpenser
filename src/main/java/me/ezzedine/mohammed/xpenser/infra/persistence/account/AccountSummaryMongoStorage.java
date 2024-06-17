@@ -1,8 +1,8 @@
 package me.ezzedine.mohammed.xpenser.infra.persistence.account;
 
 import lombok.RequiredArgsConstructor;
-import me.ezzedine.mohammed.xpenser.core.account.projection.summary.AccountSummary;
-import me.ezzedine.mohammed.xpenser.core.account.projection.summary.AccountSummaryStorage;
+import me.ezzedine.mohammed.xpenser.core.account.summary.AccountSummary;
+import me.ezzedine.mohammed.xpenser.core.account.summary.AccountSummaryStorage;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

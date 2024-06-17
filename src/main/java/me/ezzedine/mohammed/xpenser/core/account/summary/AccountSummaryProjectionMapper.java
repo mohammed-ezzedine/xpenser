@@ -1,4 +1,4 @@
-package me.ezzedine.mohammed.xpenser.core.account.projection.summary;
+package me.ezzedine.mohammed.xpenser.core.account.summary;
 
 import me.ezzedine.mohammed.xpenser.core.account.opening.AccountOpenedEvent;
 import org.mapstruct.Mapper;

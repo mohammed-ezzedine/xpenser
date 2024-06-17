@@ -2,10 +2,10 @@ package me.ezzedine.mohammed.xpenser.api.account.query;
 
 import me.ezzedine.mohammed.xpenser.api.account.ResourceUtils;
 import me.ezzedine.mohammed.xpenser.core.account.AccountNotFoundException;
-import me.ezzedine.mohammed.xpenser.core.account.projection.summary.AccountSummary;
-import me.ezzedine.mohammed.xpenser.core.account.projection.summary.BudgetSummary;
-import me.ezzedine.mohammed.xpenser.core.account.projection.summary.FetchAccountSummariesQuery;
-import me.ezzedine.mohammed.xpenser.core.account.projection.summary.FetchAccountSummaryQuery;
+import me.ezzedine.mohammed.xpenser.core.account.summary.AccountSummary;
+import me.ezzedine.mohammed.xpenser.core.account.summary.BudgetSummary;
+import me.ezzedine.mohammed.xpenser.core.account.summary.FetchAccountSummariesQuery;
+import me.ezzedine.mohammed.xpenser.core.account.summary.FetchAccountSummaryQuery;
 import me.ezzedine.mohammed.xpenser.core.currency.CurrencyCode;
 import me.ezzedine.mohammed.xpenser.utils.AccountUtils;
 import me.ezzedine.mohammed.xpenser.utils.BudgetUtils;
