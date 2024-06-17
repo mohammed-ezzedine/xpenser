@@ -100,6 +100,11 @@ public class AccountAggregate {
         apply(new MoneyTransferInitiatedEvent(command.transactionId(), command.sourceAccountId(), command.destinationAccountId(), command.amount(), command.timestamp()));
     }
 
+    @EventSourcingHandler
+    public void on(MoneyTransferInitiatedEvent event) {
+
+    }
+
     private void validateAmountCanBeWithdrewFromBudget(BigDecimal amount) {
         if (!this.budget.canWithdraw(amount)) {
             throw new IllegalArgumentException("Not enough balance to transfer");

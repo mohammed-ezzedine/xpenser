@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.time.YearMonth;
 
 @Data
-@Builder
+@Builder(toBuilder = true)
 public class MonthlyReport {
 
     @NonNull
@@ -24,12 +24,12 @@ public class MonthlyReport {
 
     private BigDecimal target;
 
-    public void addIncome(BigDecimal amount) {
-        incoming = incoming.add(amount);
+    public MonthlyReport addIncome(BigDecimal amount) {
+        return this.toBuilder().incoming(incoming.add(amount)).build();
     }
 
-    public void addExpense(BigDecimal amount) {
-        expenses = expenses.add(amount);
+    public MonthlyReport addExpense(BigDecimal amount) {
+        return this.toBuilder().expenses(expenses.add(amount)).build();
     }
 
 }
