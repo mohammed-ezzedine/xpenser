@@ -1,24 +1,18 @@
 package me.ezzedine.mohammed.xpenser.infra.config.persistence;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
+
+import java.util.List;
 
 @Configuration
-@EnableReactiveMongoRepositories(basePackages = "me.ezzedine.mohammed.xpenser.infra")
-public class MongoConfiguration /*extends AbstractReactiveMongoConfiguration*/ {
+public class MongoConfiguration {
 
-   /* @Bean
-    public MongoClient mongoClient() {
-        return MongoClients.create();
+    @Bean
+    public MongoCustomConversions customConversions(List<Converter<?, ?>> converters) {
+        return new MongoCustomConversions(converters);
     }
 
-    @Override
-    protected @NonNull String getDatabaseName() {
-        return "xpenser";
-    }*/
-
-//    @Bean
-//    public ReactiveMongoTemplate reactiveMongoTemplate(MongoClient mongoClient) {
-//        return new ReactiveMongoTemplate(mongoClient, "xpenser");
-//    }
 }
