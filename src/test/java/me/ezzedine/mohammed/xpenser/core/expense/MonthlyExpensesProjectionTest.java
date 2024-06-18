@@ -17,7 +17,7 @@ class MonthlyExpensesProjectionTest {
     private ActiveTransferStorage activeTransferStorage;
     private MonthlyReportStorage monthlyReportStorage;
     private MonthlyExpensesProjection projection;
-    private YearMonth currentMonth;
+    private YearMonth transactionMonth;
 
     @BeforeEach
     void setUp() {
@@ -26,8 +26,8 @@ class MonthlyExpensesProjectionTest {
         YearMonthFactory yearMonthFactory = mock(YearMonthFactory.class);
         projection = new MonthlyExpensesProjection(activeTransferStorage, monthlyReportStorage, yearMonthFactory);
 
-        currentMonth = mock(YearMonth.class);
-        when(yearMonthFactory.now()).thenReturn(currentMonth);
+        transactionMonth = mock(YearMonth.class);
+        when(yearMonthFactory.from(TransactionUtils.TRANSACTION_DATE)).thenReturn(transactionMonth);
     }
 
     @Test
@@ -44,7 +44,7 @@ class MonthlyExpensesProjectionTest {
     @DisplayName("it should track the incoming money when receiving a money deposited event if it were not associated with an active transfer")
     void it_should_track_the_incoming_money_when_receiving_a_money_deposited_event_if_it_were_not_associated_with_an_active_transfer() {
         when(activeTransferStorage.exists(TransactionUtils.TRANSACTION_ID)).thenReturn(Mono.just(false));
-        when(monthlyReportStorage.fetch(currentMonth)).thenReturn(Mono.just(MonthlyReportUtils.monthlyReport().build()));
+        when(monthlyReportStorage.fetch(transactionMonth)).thenReturn(Mono.just(MonthlyReportUtils.monthlyReport().build()));
         when(monthlyReportStorage.save(any())).thenReturn(Mono.empty());
 
         projection.on(TransactionUtils.moneyDepositedIntoAccountEvent().build());
@@ -59,12 +59,12 @@ class MonthlyExpensesProjectionTest {
     @DisplayName("it should add a new report when an existing one does not already exist when a money deposited event is not associated with an active transfer")
     void it_should_add_a_new_report_when_an_existing_one_does_not_already_exist_when_a_money_deposited_event_is_not_associated_with_an_active_transfer() {
         when(activeTransferStorage.exists(TransactionUtils.TRANSACTION_ID)).thenReturn(Mono.just(false));
-        when(monthlyReportStorage.fetch(currentMonth)).thenReturn(Mono.empty());
+        when(monthlyReportStorage.fetch(transactionMonth)).thenReturn(Mono.empty());
         when(monthlyReportStorage.save(any())).thenReturn(Mono.empty());
 
         projection.on(TransactionUtils.moneyDepositedIntoAccountEvent().build());
 
-        MonthlyReport expectedReport = MonthlyReport.builder().month(currentMonth).incoming(TransactionUtils.TRANSACTION_AMOUNT).build();
+        MonthlyReport expectedReport = MonthlyReport.builder().month(transactionMonth).incoming(TransactionUtils.TRANSACTION_AMOUNT).build();
         verify(monthlyReportStorage).save(expectedReport);
     }
 
@@ -93,7 +93,7 @@ class MonthlyExpensesProjectionTest {
     @DisplayName("it should track the expenses when receiving a money withdrew event that is not associated with an active transfer")
     void it_should_track_the_expenses_when_receiving_a_money_withdrew_event_that_is_not_associated_with_an_active_transfer() {
         when(activeTransferStorage.exists(TransactionUtils.TRANSACTION_ID)).thenReturn(Mono.just(false));
-        when(monthlyReportStorage.fetch(currentMonth)).thenReturn(Mono.just(MonthlyReportUtils.monthlyReport().build()));
+        when(monthlyReportStorage.fetch(transactionMonth)).thenReturn(Mono.just(MonthlyReportUtils.monthlyReport().build()));
         when(monthlyReportStorage.save(any())).thenReturn(Mono.empty());
 
         projection.on(TransactionUtils.moneyWithdrewFromAccountEvent().build());
@@ -108,12 +108,12 @@ class MonthlyExpensesProjectionTest {
     @DisplayName("it should save a new report in the storage when an existing one does not already exist upon receiving a money withdrew event that is not associated with an active transfer")
     void it_should_save_a_new_report_in_the_storage_when_an_existing_one_does_not_already_exist_upon_receiving_a_money_withdrew_event_that_is_not_associated_with_an_active_transfer() {
         when(activeTransferStorage.exists(TransactionUtils.TRANSACTION_ID)).thenReturn(Mono.just(false));
-        when(monthlyReportStorage.fetch(currentMonth)).thenReturn(Mono.empty());
+        when(monthlyReportStorage.fetch(transactionMonth)).thenReturn(Mono.empty());
         when(monthlyReportStorage.save(any())).thenReturn(Mono.empty());
 
         projection.on(TransactionUtils.moneyWithdrewFromAccountEvent().build());
 
-        MonthlyReport expectedReport = MonthlyReport.builder().month(currentMonth).expenses(TransactionUtils.TRANSACTION_AMOUNT).build();
+        MonthlyReport expectedReport = MonthlyReport.builder().month(transactionMonth).expenses(TransactionUtils.TRANSACTION_AMOUNT).build();
         verify(monthlyReportStorage).save(expectedReport);
     }
 

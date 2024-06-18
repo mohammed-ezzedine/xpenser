@@ -29,8 +29,8 @@ public class MonthlyExpensesProjection {
                 if (exists) {
                     return activeTransferStorage.delete(event.transactionId());
                 } else {
-                    return monthlyReportStorage.fetch(yearMonthFactory.now())
-                            .defaultIfEmpty(MonthlyReport.builder().month(yearMonthFactory.now()).build())
+                    return monthlyReportStorage.fetch(yearMonthFactory.from(event.timestamp()))
+                            .defaultIfEmpty(MonthlyReport.builder().month(yearMonthFactory.from(event.timestamp())).build())
                             .map(report -> report.addIncome(event.amount()))
                             .flatMap(monthlyReportStorage::save);
                 }
@@ -42,8 +42,8 @@ public class MonthlyExpensesProjection {
     public void on(MoneyWithdrewFromAccountEvent event) {
         activeTransferStorage.exists(event.transactionId())
             .filter(exists -> !exists)
-            .flatMap(exists -> monthlyReportStorage.fetch(yearMonthFactory.now())
-                    .defaultIfEmpty(MonthlyReport.builder().month(yearMonthFactory.now()).build()))
+            .flatMap(exists -> monthlyReportStorage.fetch(yearMonthFactory.from(event.timestamp()))
+                    .defaultIfEmpty(MonthlyReport.builder().month(yearMonthFactory.from(event.timestamp())).build()))
             .map(report -> report.addExpense(event.amount()))
             .flatMap(monthlyReportStorage::save)
             .block();
