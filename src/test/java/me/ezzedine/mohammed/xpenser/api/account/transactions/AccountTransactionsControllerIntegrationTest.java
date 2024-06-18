@@ -15,6 +15,8 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
+import java.sql.Date;
+import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -53,6 +55,22 @@ class AccountTransactionsControllerIntegrationTest {
                 .is2xxSuccessful();
 
         DepositMoneyCommand command = TransactionUtils.depositMoneyCommand().accountId("account-id").amount(BigDecimal.valueOf(10))
+                .note("message").timestamp(Date.from(Instant.parse("2024-06-18T09:07:52.535892800Z"))).build();
+        verify(commandGateway).sendAndWait(command);
+    }
+
+    @Test
+    @DisplayName("it should generate a new timestamp for the issued deposit money command when the api request does not include one")
+    void it_should_generate_a_new_timestamp_for_the_issued_deposit_money_command_when_the_api_request_does_not_include_one() {
+        testClient.post()
+                .uri("/accounts/account-id/transactions/deposit")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(ResourceUtils.resourceAsString("account/api/transactions/deposit_money_without_timestamp.request.json"))
+                .exchange()
+                .expectStatus()
+                .is2xxSuccessful();
+
+        DepositMoneyCommand command = TransactionUtils.depositMoneyCommand().accountId("account-id").amount(BigDecimal.valueOf(10))
                 .note("message").build();
         verify(commandGateway).sendAndWait(command);
     }
@@ -69,6 +87,22 @@ class AccountTransactionsControllerIntegrationTest {
                 .is2xxSuccessful();
 
         WithdrawMoneyCommand command = TransactionUtils.withdrawMoneyCommand().accountId("account-id").amount(BigDecimal.valueOf(10))
+                .category("some-category").note("message").timestamp(Date.from(Instant.parse("2024-06-18T09:07:52.535892800Z"))).build();
+        verify(commandGateway).sendAndWait(command);
+    }
+
+    @Test
+    @DisplayName("it should generate a new timestamp for the issued withdraw money command when the api request does not include one")
+    void it_should_generate_a_new_timestamp_for_the_issued_withdraw_money_command_when_the_api_request_does_not_include_one() {
+        testClient.post()
+                .uri("/accounts/account-id/transactions/withdraw")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(ResourceUtils.resourceAsString("account/api/transactions/withdraw_money_without_timestamp.request.json"))
+                .exchange()
+                .expectStatus()
+                .is2xxSuccessful();
+
+        WithdrawMoneyCommand command = TransactionUtils.withdrawMoneyCommand().accountId("account-id").amount(BigDecimal.valueOf(10))
                 .category("some-category").note("message").build();
         verify(commandGateway).sendAndWait(command);
     }
@@ -80,6 +114,23 @@ class AccountTransactionsControllerIntegrationTest {
                 .uri("/accounts/account-id/transactions/transfer")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(ResourceUtils.resourceAsString("account/api/transactions/transfer_money.request.json"))
+                .exchange()
+                .expectStatus()
+                .is2xxSuccessful();
+
+        TransferMoneyCommand command = TransactionUtils.transferMoneyCommand().sourceAccountId("account-id")
+                .destinationAccountId("destination-account-id").amount(BigDecimal.valueOf(10))
+                .timestamp(Date.from(Instant.parse("2024-06-18T09:07:52.535892800Z"))).build();
+        verify(commandGateway).sendAndWait(command);
+    }
+
+    @Test
+    @DisplayName("it should generate a new timestamp for the issued transfer money command when the api request does not include one")
+    void it_should_generate_a_new_timestamp_for_the_issued_transfer_money_command_when_the_api_request_does_not_include_one() {
+        testClient.post()
+                .uri("/accounts/account-id/transactions/transfer")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(ResourceUtils.resourceAsString("account/api/transactions/transfer_money_without_timestamp.request.json"))
                 .exchange()
                 .expectStatus()
                 .is2xxSuccessful();

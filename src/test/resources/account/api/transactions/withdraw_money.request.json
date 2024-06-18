@@ -1,5 +1,6 @@
 {
   "amount": 10,
   "note": "message",
-  "category": "some-category"
+  "category": "some-category",
+  "timestamp": "2024-06-18T09:07:52.535892800Z"
 }
