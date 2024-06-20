@@ -1,7 +1,6 @@
 package me.ezzedine.mohammed.xpenser.utils;
 
-import me.ezzedine.mohammed.xpenser.core.account.opening.AccountOpenedEvent;
-import me.ezzedine.mohammed.xpenser.core.account.opening.OpenAccountCommand;
+import me.ezzedine.mohammed.xpenser.core.account.opening.*;
 import me.ezzedine.mohammed.xpenser.core.account.summary.AccountSummary;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.query.AccountTransactionSummary;
 import me.ezzedine.mohammed.xpenser.infra.persistence.account.AccountSummaryDocument;
@@ -37,8 +36,28 @@ public class AccountUtils {
         return AccountSummaryDocument.builder().id(ANOTHER_ACCOUNT_ID).name(ANOTHER_ACCOUNT_NAME).currencyCode(CurrencyUtils.anotherCurrencyCode()).amount(BudgetUtils.ANOTHER_BUDGET_AMOUNT);
     }
 
-    public static OpenAccountCommand.OpenAccountCommandBuilder openAccountCommand() {
+    public static OpenAccountCommand.OpenAccountCommandBuilder<?, ?> openAccountCommand() {
         return OpenAccountCommand.builder().name(AccountUtils.ACCOUNT_NAME).id(AccountUtils.ACCOUNT_ID)
+                .currencyCode(CurrencyUtils.currencyCode()).budgetInitialAmount(BudgetUtils.BUDGET_AMOUNT).timestamp(ACCOUNT_CREATION_DATE);
+    }
+
+    public static OpenSavingsAccountCommand.OpenSavingsAccountCommandBuilder<?, ?> openSavingsAccountCommand() {
+        return OpenSavingsAccountCommand.builder().name(AccountUtils.ACCOUNT_NAME).id(AccountUtils.ACCOUNT_ID)
+                .currencyCode(CurrencyUtils.currencyCode()).budgetInitialAmount(BudgetUtils.BUDGET_AMOUNT).timestamp(ACCOUNT_CREATION_DATE);
+    }
+
+    public static OpenRegularAccountCommand.OpenRegularAccountCommandBuilder<?, ?> openRegularAccountCommand() {
+        return OpenRegularAccountCommand.builder().name(AccountUtils.ACCOUNT_NAME).id(AccountUtils.ACCOUNT_ID)
+                .currencyCode(CurrencyUtils.currencyCode()).budgetInitialAmount(BudgetUtils.BUDGET_AMOUNT).timestamp(ACCOUNT_CREATION_DATE);
+    }
+
+    public static OpenInvestmentsAccountCommand.OpenInvestmentsAccountCommandBuilder<?, ?> openInvestmentsAccountCommand() {
+        return OpenInvestmentsAccountCommand.builder().name(AccountUtils.ACCOUNT_NAME).id(AccountUtils.ACCOUNT_ID)
+                .currencyCode(CurrencyUtils.currencyCode()).budgetInitialAmount(BudgetUtils.BUDGET_AMOUNT).timestamp(ACCOUNT_CREATION_DATE);
+    }
+
+    public static OpenLoanAccountCommand.OpenLoanAccountCommandBuilder<?, ?> openLoanAccountCommand() {
+        return OpenLoanAccountCommand.builder().name(AccountUtils.ACCOUNT_NAME).id(AccountUtils.ACCOUNT_ID)
                 .currencyCode(CurrencyUtils.currencyCode()).budgetInitialAmount(BudgetUtils.BUDGET_AMOUNT).timestamp(ACCOUNT_CREATION_DATE);
     }
 
