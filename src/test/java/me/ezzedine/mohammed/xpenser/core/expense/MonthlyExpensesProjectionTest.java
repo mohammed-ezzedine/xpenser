@@ -9,11 +9,13 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
 
 import java.time.YearMonth;
+import java.util.UUID;
 
 import static org.mockito.Mockito.*;
 
 class MonthlyExpensesProjectionTest {
 
+    public static final String REGULAR_ACCOUNT_AGGREGATE_TYPE = "RegularAccountAggregate";
     private ActiveTransferStorage activeTransferStorage;
     private MonthlyReportStorage monthlyReportStorage;
     private MonthlyExpensesProjection projection;
@@ -41,13 +43,23 @@ class MonthlyExpensesProjectionTest {
     }
 
     @Test
+    @DisplayName("it should not track the incoming money when receiving a money deposited event to an account that is not a regular one")
+    void it_should_not_track_the_incoming_money_when_receiving_a_money_deposited_event_to_an_account_that_is_not_a_regular_one() {
+        when(activeTransferStorage.exists(TransactionUtils.TRANSACTION_ID)).thenReturn(Mono.just(false));
+        when(activeTransferStorage.delete(TransactionUtils.TRANSACTION_ID)).thenReturn(Mono.empty());
+
+        projection.on(TransactionUtils.moneyDepositedIntoAccountEvent().build(), UUID.randomUUID().toString());
+        verifyNoInteractions(monthlyReportStorage);
+    }
+
+    @Test
     @DisplayName("it should track the incoming money when receiving a money deposited event if it were not associated with an active transfer")
     void it_should_track_the_incoming_money_when_receiving_a_money_deposited_event_if_it_were_not_associated_with_an_active_transfer() {
         when(activeTransferStorage.exists(TransactionUtils.TRANSACTION_ID)).thenReturn(Mono.just(false));
         when(monthlyReportStorage.fetch(transactionMonth)).thenReturn(Mono.just(MonthlyReportUtils.monthlyReport().build()));
         when(monthlyReportStorage.save(any())).thenReturn(Mono.empty());
 
-        projection.on(TransactionUtils.moneyDepositedIntoAccountEvent().build());
+        projection.on(TransactionUtils.moneyDepositedIntoAccountEvent().build(), REGULAR_ACCOUNT_AGGREGATE_TYPE);
 
         MonthlyReport expectedReport = MonthlyReportUtils.monthlyReport()
                 .incoming(MonthlyReportUtils.INCOMING.add(TransactionUtils.TRANSACTION_AMOUNT))
@@ -62,7 +74,7 @@ class MonthlyExpensesProjectionTest {
         when(monthlyReportStorage.fetch(transactionMonth)).thenReturn(Mono.empty());
         when(monthlyReportStorage.save(any())).thenReturn(Mono.empty());
 
-        projection.on(TransactionUtils.moneyDepositedIntoAccountEvent().build());
+        projection.on(TransactionUtils.moneyDepositedIntoAccountEvent().build(), REGULAR_ACCOUNT_AGGREGATE_TYPE);
 
         MonthlyReport expectedReport = MonthlyReport.builder().month(transactionMonth).incoming(TransactionUtils.TRANSACTION_AMOUNT).build();
         verify(monthlyReportStorage).save(expectedReport);
@@ -74,7 +86,7 @@ class MonthlyExpensesProjectionTest {
         when(activeTransferStorage.exists(TransactionUtils.TRANSACTION_ID)).thenReturn(Mono.just(true));
         when(activeTransferStorage.delete(TransactionUtils.TRANSACTION_ID)).thenReturn(Mono.empty());
 
-        projection.on(TransactionUtils.moneyDepositedIntoAccountEvent().build());
+        projection.on(TransactionUtils.moneyDepositedIntoAccountEvent().build(), REGULAR_ACCOUNT_AGGREGATE_TYPE);
         verifyNoInteractions(monthlyReportStorage);
     }
 
@@ -84,9 +96,31 @@ class MonthlyExpensesProjectionTest {
         when(activeTransferStorage.exists(TransactionUtils.TRANSACTION_ID)).thenReturn(Mono.just(true));
         when(activeTransferStorage.delete(TransactionUtils.TRANSACTION_ID)).thenReturn(Mono.empty());
 
-        projection.on(TransactionUtils.moneyDepositedIntoAccountEvent().build());
+        projection.on(TransactionUtils.moneyDepositedIntoAccountEvent().build(), REGULAR_ACCOUNT_AGGREGATE_TYPE);
 
         verify(activeTransferStorage).delete(TransactionUtils.TRANSACTION_ID);
+    }
+
+    @Test
+    @DisplayName("it should delete the active transfer from the storage when receiving a money deposited event that is associated with an active transfer even if the account type is not regular")
+    void it_should_delete_the_active_transfer_from_the_storage_when_receiving_a_money_deposited_event_that_is_associated_with_an_active_transfer_even_if_the_account_type_is_not_regular() {
+        when(activeTransferStorage.exists(TransactionUtils.TRANSACTION_ID)).thenReturn(Mono.just(true));
+        when(activeTransferStorage.delete(TransactionUtils.TRANSACTION_ID)).thenReturn(Mono.empty());
+
+        projection.on(TransactionUtils.moneyDepositedIntoAccountEvent().build(), UUID.randomUUID().toString());
+
+        verify(activeTransferStorage).delete(TransactionUtils.TRANSACTION_ID);
+    }
+
+    @Test
+    @DisplayName("it should not track the expenses when receiving a money withdraw event when the account type is not regular")
+    void it_should_not_track_the_expenses_when_receiving_a_money_withdraw_event_when_the_account_type_is_not_regular() {
+        when(activeTransferStorage.exists(TransactionUtils.TRANSACTION_ID)).thenReturn(Mono.just(false));
+        when(monthlyReportStorage.fetch(transactionMonth)).thenReturn(Mono.just(MonthlyReportUtils.monthlyReport().build()));
+        when(monthlyReportStorage.save(any())).thenReturn(Mono.empty());
+
+        projection.on(TransactionUtils.moneyWithdrewFromAccountEvent().build(), UUID.randomUUID().toString());
+        verifyNoInteractions(monthlyReportStorage);
     }
 
     @Test
@@ -96,7 +130,7 @@ class MonthlyExpensesProjectionTest {
         when(monthlyReportStorage.fetch(transactionMonth)).thenReturn(Mono.just(MonthlyReportUtils.monthlyReport().build()));
         when(monthlyReportStorage.save(any())).thenReturn(Mono.empty());
 
-        projection.on(TransactionUtils.moneyWithdrewFromAccountEvent().build());
+        projection.on(TransactionUtils.moneyWithdrewFromAccountEvent().build(), REGULAR_ACCOUNT_AGGREGATE_TYPE);
 
         MonthlyReport expectedReport = MonthlyReportUtils.monthlyReport()
                 .expenses(MonthlyReportUtils.EXPENSES.add(TransactionUtils.TRANSACTION_AMOUNT))
@@ -111,7 +145,7 @@ class MonthlyExpensesProjectionTest {
         when(monthlyReportStorage.fetch(transactionMonth)).thenReturn(Mono.empty());
         when(monthlyReportStorage.save(any())).thenReturn(Mono.empty());
 
-        projection.on(TransactionUtils.moneyWithdrewFromAccountEvent().build());
+        projection.on(TransactionUtils.moneyWithdrewFromAccountEvent().build(), REGULAR_ACCOUNT_AGGREGATE_TYPE);
 
         MonthlyReport expectedReport = MonthlyReport.builder().month(transactionMonth).expenses(TransactionUtils.TRANSACTION_AMOUNT).build();
         verify(monthlyReportStorage).save(expectedReport);
@@ -122,7 +156,7 @@ class MonthlyExpensesProjectionTest {
     void it_should_ignore_any_money_withdrew_event_that_is_associated_with_an_active_transfer() {
         when(activeTransferStorage.exists(TransactionUtils.TRANSACTION_ID)).thenReturn(Mono.just(true));
 
-        projection.on(TransactionUtils.moneyWithdrewFromAccountEvent().build());
+        projection.on(TransactionUtils.moneyWithdrewFromAccountEvent().build(), REGULAR_ACCOUNT_AGGREGATE_TYPE);
         verifyNoInteractions(monthlyReportStorage);
     }
 }
