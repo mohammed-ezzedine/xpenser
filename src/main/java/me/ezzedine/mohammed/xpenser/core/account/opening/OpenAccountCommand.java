@@ -16,8 +16,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(fluent = true)
-public class OpenAccountCommand {
-    // TODO make it abstract
+public abstract class OpenAccountCommand {
 
     @NonNull
     private String id;

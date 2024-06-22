@@ -29,23 +29,6 @@ class AccountAggregateTest {
     }
 
     @Test
-    @DisplayName("it should throw an error upon receiving an open account command with a negative initial budget")
-    void it_should_throw_an_error_upon_receiving_an_open_account_command_with_a_negative_initial_budget() {
-        testFixture.givenNoPriorActivity()
-                .when(AccountUtils.openAccountCommand().budgetInitialAmount(BigDecimal.valueOf(-3)).build())
-                .expectException(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("it should publish an account opened event upon receiving an open account command")
-    void it_should_publish_an_account_opened_event_upon_receiving_an_open_account_command() {
-        testFixture.givenNoPriorActivity()
-                .when(AccountUtils.openAccountCommand().build())
-                .expectSuccessfulHandlerExecution()
-                .expectEvents(AccountUtils.accountOpenedEvent());
-    }
-
-    @Test
     @DisplayName("it should throw an exception when receiving a deposit money command with a negative amount")
     void it_should_throw_an_exception_when_receiving_a_deposit_money_command_with_a_negative_amount() {
         testFixture.given(AccountUtils.accountOpenedEvent())

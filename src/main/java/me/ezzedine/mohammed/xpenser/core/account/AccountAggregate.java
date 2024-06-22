@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.ezzedine.mohammed.xpenser.core.account.budget.Budget;
 import me.ezzedine.mohammed.xpenser.core.account.opening.AccountOpenedEvent;
-import me.ezzedine.mohammed.xpenser.core.account.opening.OpenAccountCommand;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.*;
 import me.ezzedine.mohammed.xpenser.core.currency.exchange.CurrencyExchangeManager;
 import org.axonframework.commandhandling.CommandHandler;
@@ -29,24 +28,6 @@ public class AccountAggregate {
     private String id;
     private String name;
     private Budget budget;
-
-    @CommandHandler
-    public AccountAggregate(OpenAccountCommand command) {
-        if (command.budgetInitialAmount().compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Amount cannot be negative.");
-        }
-
-        AccountOpenedEvent event = new AccountOpenedEvent(
-                command.id(),
-                command.name(),
-                Budget.builder()
-                        .currency(command.currencyCode())
-                        .amount(command.budgetInitialAmount())
-                        .build(),
-                command.timestamp()
-        );
-        apply(event);
-    }
 
     @EventSourcingHandler
     public void on(AccountOpenedEvent event) {
@@ -72,6 +53,7 @@ public class AccountAggregate {
                 .build();
         AggregateLifecycle.apply(event);
     }
+
     @EventSourcingHandler
     public void on(MoneyDepositedInAccountEvent event) {
         this.budget = new Budget(budget.getCurrency(), budget.getAmount().add(event.amount()));

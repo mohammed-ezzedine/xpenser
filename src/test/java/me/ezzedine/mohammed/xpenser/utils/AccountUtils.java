@@ -36,11 +36,6 @@ public class AccountUtils {
         return AccountSummaryDocument.builder().id(ANOTHER_ACCOUNT_ID).name(ANOTHER_ACCOUNT_NAME).currencyCode(CurrencyUtils.anotherCurrencyCode()).amount(BudgetUtils.ANOTHER_BUDGET_AMOUNT);
     }
 
-    public static OpenAccountCommand.OpenAccountCommandBuilder<?, ?> openAccountCommand() {
-        return OpenAccountCommand.builder().name(AccountUtils.ACCOUNT_NAME).id(AccountUtils.ACCOUNT_ID)
-                .currencyCode(CurrencyUtils.currencyCode()).budgetInitialAmount(BudgetUtils.BUDGET_AMOUNT).timestamp(ACCOUNT_CREATION_DATE);
-    }
-
     public static OpenSavingsAccountCommand.OpenSavingsAccountCommandBuilder<?, ?> openSavingsAccountCommand() {
         return OpenSavingsAccountCommand.builder().name(AccountUtils.ACCOUNT_NAME).id(AccountUtils.ACCOUNT_ID)
                 .currencyCode(CurrencyUtils.currencyCode()).budgetInitialAmount(BudgetUtils.BUDGET_AMOUNT).timestamp(ACCOUNT_CREATION_DATE);
