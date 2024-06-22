@@ -29,4 +29,15 @@ public class MonthlyReportController {
                         .last(result.getT2().getMonth().toString())
                         .build());
     }
+
+    @GetMapping("latest")
+    public Mono<MonthlyReportApiResponse> fetchLatestMonthlyReport() {
+        return storage.fetchLastMonthReport()
+                .zipWith(storage.fetchFirstMonthReport())
+                .map(result -> MonthlyReportApiResponse.builder()
+                        .report(mapper.map(result.getT1()))
+                        .first(result.getT2().getMonth().toString())
+                        .last(result.getT1().getMonth().toString())
+                        .build());
+    }
 }

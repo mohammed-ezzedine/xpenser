@@ -37,8 +37,8 @@ class MonthlyReportControllerIntegrationTest {
     private MonthlyReportStorage storage;
 
     @Test
-    @DisplayName("it should return the report correctly")
-    void it_should_return_the_report_correctly() {
+    @DisplayName("it should return the correct report when asked about a specific month")
+    void it_should_return_the_correct_report_when_asked_about_a_specific_month() {
         when(storage.fetch(MonthlyReportUtils.MONTH)).thenReturn(Mono.just(MonthlyReportUtils.monthlyReport().build()));
         MonthlyReport firstMonthReport = mock(MonthlyReport.class);
         MonthlyReport lastMonthReport = mock(MonthlyReport.class);
@@ -54,6 +54,28 @@ class MonthlyReportControllerIntegrationTest {
                 .json(ResourceUtils.resourceAsString("expenses/report/api/report_response.json")
                         .replace("{FIRST_MONTH}", YearMonth.of(2024, Month.JANUARY).toString())
                         .replace("{LAST_MONTH}", YearMonth.of(2024, Month.AUGUST).toString())
+                        .replace("{REPORT_MONTH}", MonthlyReportUtils.MONTH.toString())
+                        .replace("\"{REPORT_INCOMING}\"", MonthlyReportUtils.INCOMING.toString())
+                        .replace("\"{REPORT_EXPENSES}\"", MonthlyReportUtils.EXPENSES.toString())
+                        .replace("\"{REPORT_TARGET}\"", MonthlyReportUtils.TARGET.toString())
+                );
+    }
+
+    @Test
+    @DisplayName("it should return the correct report when asked for the latest one")
+    void it_should_return_the_correct_report_when_asked_for_the_latest_one() {
+        MonthlyReport firstMonthReport = mock(MonthlyReport.class);
+        when(storage.fetchFirstMonthReport()).thenReturn(Mono.just(firstMonthReport));
+        when(storage.fetchLastMonthReport()).thenReturn(Mono.just(MonthlyReportUtils.monthlyReport().build()));
+        when(firstMonthReport.getMonth()).thenReturn(YearMonth.of(2024, Month.JANUARY));
+
+        client.get()
+                .uri("/expenses/reports/latest")
+                .exchange()
+                .expectBody()
+                .json(ResourceUtils.resourceAsString("expenses/report/api/report_response.json")
+                        .replace("{FIRST_MONTH}", YearMonth.of(2024, Month.JANUARY).toString())
+                        .replace("{LAST_MONTH}", MonthlyReportUtils.MONTH.toString())
                         .replace("{REPORT_MONTH}", MonthlyReportUtils.MONTH.toString())
                         .replace("\"{REPORT_INCOMING}\"", MonthlyReportUtils.INCOMING.toString())
                         .replace("\"{REPORT_EXPENSES}\"", MonthlyReportUtils.EXPENSES.toString())
