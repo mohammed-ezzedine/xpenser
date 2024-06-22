@@ -51,42 +51,6 @@ class AccountOpeningControllerIntegrationTest {
     }
 
     @Nested
-    @DisplayName("When the user requests to open a new account")
-    class OpeningNewAccount {
-
-        @Test
-        @DisplayName("it should issue an open account command")
-        void it_should_issue_an_open_account_command() {
-            client.post()
-                    .uri("/accounts/open")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(ResourceUtils.resourceAsString("account/api/opening/open_account.request.json"))
-                    .exchange()
-                    .expectStatus()
-                    .is2xxSuccessful();
-
-            verify(commandGateway).sendAndWait(OpenAccountCommand.builder()
-                    .name("account-name")
-                    .id(ACCOUNT_ID)
-                    .currencyCode(CurrencyCode.USD)
-                    .budgetInitialAmount(BigDecimal.valueOf(81.0))
-                    .timestamp(currentDate).build());
-        }
-
-        @Test
-        @DisplayName("it should return the account id")
-        void it_should_return_the_account_id() {
-            client.post()
-                    .uri("/accounts/open")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(ResourceUtils.resourceAsString("account/api/opening/open_account.request.json"))
-                    .exchange()
-                    .expectBody()
-                    .json(ResourceUtils.resourceAsString("account/api/opening/open_account.response.json"));
-        }
-    }
-
-    @Nested
     @DisplayName("When the user requests to open a new investments account")
     class OpeningNewInvestmentsAccount {
 

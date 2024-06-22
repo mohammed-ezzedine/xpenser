@@ -23,24 +23,6 @@ public class AccountOpeningController {
     private final AccountIdGenerator idGenerator;
     private final DateFactory dateFactory;
 
-    @PostMapping
-    public Mono<AccountIdentificationApiResponse> openAccount(@RequestBody OpenAccountApiRequest request) {
-        log.info("Received a request to open a new account {}", request);
-
-        return idGenerator.generate()
-                .map(id -> OpenAccountCommand.builder()
-                        .id(id)
-                        .name(request.getName())
-                        .currencyCode(request.getCurrency())
-                        .budgetInitialAmount(request.getInitialAmount())
-                        .timestamp(dateFactory.now())
-                        .build())
-                .doOnNext(commandGateway::sendAndWait)
-                .map(command -> new AccountIdentificationApiResponse(command.id()))
-                .onErrorStop()
-                .timeout(Duration.ofSeconds(5));
-    }
-
     @PostMapping("investments")
     public Mono<AccountIdentificationApiResponse> openInvestmentsAccount(@RequestBody OpenInvestmentsAccountApiRequest request) {
         log.info("Received a request to open a new investments account {}", request);

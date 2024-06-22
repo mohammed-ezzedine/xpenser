@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OpenAccountApiRequest {
+public abstract class OpenAccountApiRequest {
 
     @NotNull
     private String name;
