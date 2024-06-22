@@ -1,8 +1,7 @@
 package me.ezzedine.mohammed.xpenser.api.account.opening;
 
 import me.ezzedine.mohammed.xpenser.api.account.ResourceUtils;
-import me.ezzedine.mohammed.xpenser.core.account.opening.AccountIdGenerator;
-import me.ezzedine.mohammed.xpenser.core.account.opening.OpenAccountCommand;
+import me.ezzedine.mohammed.xpenser.core.account.opening.*;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.DateFactory;
 import me.ezzedine.mohammed.xpenser.core.currency.CurrencyCode;
 import org.axonframework.commandhandling.gateway.CommandGateway;
@@ -81,6 +80,150 @@ class AccountOpeningControllerIntegrationTest {
                     .uri("/accounts/open")
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(ResourceUtils.resourceAsString("account/api/opening/open_account.request.json"))
+                    .exchange()
+                    .expectBody()
+                    .json(ResourceUtils.resourceAsString("account/api/opening/open_account.response.json"));
+        }
+    }
+
+    @Nested
+    @DisplayName("When the user requests to open a new investments account")
+    class OpeningNewInvestmentsAccount {
+
+        @Test
+        @DisplayName("it should issue an open investments account command")
+        void it_should_issue_an_open_investments_account_command() {
+            client.post()
+                    .uri("/accounts/open/investments")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(ResourceUtils.resourceAsString("account/api/opening/open_investments_account.request.json"))
+                    .exchange()
+                    .expectStatus()
+                    .is2xxSuccessful();
+
+            verify(commandGateway).sendAndWait(OpenInvestmentsAccountCommand.builder()
+                    .name("account-name")
+                    .id(ACCOUNT_ID)
+                    .currencyCode(CurrencyCode.USD)
+                    .budgetInitialAmount(BigDecimal.valueOf(81.0))
+                    .timestamp(currentDate).build());
+        }
+
+        @Test
+        @DisplayName("it should return the account id")
+        void it_should_return_the_account_id() {
+            client.post()
+                    .uri("/accounts/open/investments")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(ResourceUtils.resourceAsString("account/api/opening/open_investments_account.request.json"))
+                    .exchange()
+                    .expectBody()
+                    .json(ResourceUtils.resourceAsString("account/api/opening/open_account.response.json"));
+        }
+    }
+
+    @Nested
+    @DisplayName("When the user requests to open a new loan account")
+    class OpeningNewLoanAccount {
+
+        @Test
+        @DisplayName("it should issue an open loan account command")
+        void it_should_issue_an_open_loan_account_command() {
+            client.post()
+                    .uri("/accounts/open/loan")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(ResourceUtils.resourceAsString("account/api/opening/open_loan_account.request.json"))
+                    .exchange()
+                    .expectStatus()
+                    .is2xxSuccessful();
+
+            verify(commandGateway).sendAndWait(OpenLoanAccountCommand.builder()
+                    .name("account-name")
+                    .id(ACCOUNT_ID)
+                    .currencyCode(CurrencyCode.USD)
+                    .budgetInitialAmount(BigDecimal.valueOf(81.0))
+                    .timestamp(currentDate).build());
+        }
+
+        @Test
+        @DisplayName("it should return the account id")
+        void it_should_return_the_account_id() {
+            client.post()
+                    .uri("/accounts/open/loan")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(ResourceUtils.resourceAsString("account/api/opening/open_loan_account.request.json"))
+                    .exchange()
+                    .expectBody()
+                    .json(ResourceUtils.resourceAsString("account/api/opening/open_account.response.json"));
+        }
+    }
+
+    @Nested
+    @DisplayName("When the user requests to open a new regular account")
+    class OpeningNewRegularAccount {
+
+        @Test
+        @DisplayName("it should issue an open regular account command")
+        void it_should_issue_an_open_regular_account_command() {
+            client.post()
+                    .uri("/accounts/open/regular")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(ResourceUtils.resourceAsString("account/api/opening/open_regular_account.request.json"))
+                    .exchange()
+                    .expectStatus()
+                    .is2xxSuccessful();
+
+            verify(commandGateway).sendAndWait(OpenRegularAccountCommand.builder()
+                    .name("account-name")
+                    .id(ACCOUNT_ID)
+                    .currencyCode(CurrencyCode.USD)
+                    .budgetInitialAmount(BigDecimal.valueOf(81.0))
+                    .timestamp(currentDate).build());
+        }
+
+        @Test
+        @DisplayName("it should return the account id")
+        void it_should_return_the_account_id() {
+            client.post()
+                    .uri("/accounts/open/regular")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(ResourceUtils.resourceAsString("account/api/opening/open_regular_account.request.json"))
+                    .exchange()
+                    .expectBody()
+                    .json(ResourceUtils.resourceAsString("account/api/opening/open_account.response.json"));
+        }
+    }
+
+    @Nested
+    @DisplayName("When the user requests to open a new savings account")
+    class OpeningNewSavingsAccount {
+
+        @Test
+        @DisplayName("it should issue an open savings account command")
+        void it_should_issue_an_open_savings_account_command() {
+            client.post()
+                    .uri("/accounts/open/savings")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(ResourceUtils.resourceAsString("account/api/opening/open_savings_account.request.json"))
+                    .exchange()
+                    .expectStatus()
+                    .is2xxSuccessful();
+
+            verify(commandGateway).sendAndWait(OpenSavingsAccountCommand.builder()
+                    .name("account-name")
+                    .id(ACCOUNT_ID)
+                    .currencyCode(CurrencyCode.USD)
+                    .budgetInitialAmount(BigDecimal.valueOf(81.0))
+                    .timestamp(currentDate).build());
+        }
+
+        @Test
+        @DisplayName("it should return the account id")
+        void it_should_return_the_account_id() {
+            client.post()
+                    .uri("/accounts/open/savings")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(ResourceUtils.resourceAsString("account/api/opening/open_savings_account.request.json"))
                     .exchange()
                     .expectBody()
                     .json(ResourceUtils.resourceAsString("account/api/opening/open_account.response.json"));

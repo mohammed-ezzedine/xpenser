@@ -1,12 +1,26 @@
 package me.ezzedine.mohammed.xpenser.api.account.opening;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import me.ezzedine.mohammed.xpenser.core.currency.CurrencyCode;
 
 import java.math.BigDecimal;
 
-public record OpenAccountApiRequest(
-        @NotNull String name,
-        @NotNull CurrencyCode currency,
-        @NotNull BigDecimal initialAmount
-) { }
+@Data
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+public class OpenAccountApiRequest {
+
+    @NotNull
+    private String name;
+
+    @NotNull
+    private CurrencyCode currency;
+
+    @NotNull
+    private BigDecimal initialAmount;
+}
