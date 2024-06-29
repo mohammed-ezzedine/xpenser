@@ -1,6 +1,9 @@
 package me.ezzedine.mohammed.xpenser.core.expense;
 
 import me.ezzedine.mohammed.xpenser.core.account.transactions.transfer.ActiveTransferStorage;
+import me.ezzedine.mohammed.xpenser.core.currency.CurrencyCode;
+import me.ezzedine.mohammed.xpenser.core.currency.exchange.CurrencyExchangeManager;
+import me.ezzedine.mohammed.xpenser.utils.CurrencyUtils;
 import me.ezzedine.mohammed.xpenser.utils.MonthlyReportUtils;
 import me.ezzedine.mohammed.xpenser.utils.TransactionUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,16 +23,20 @@ class MonthlyExpensesProjectionTest {
     private MonthlyReportStorage monthlyReportStorage;
     private MonthlyExpensesProjection projection;
     private YearMonth transactionMonth;
+    private CurrencyExchangeManager currencyExchangeManager;
 
     @BeforeEach
     void setUp() {
         activeTransferStorage = mock(ActiveTransferStorage.class);
         monthlyReportStorage = mock(MonthlyReportStorage.class);
         YearMonthFactory yearMonthFactory = mock(YearMonthFactory.class);
-        projection = new MonthlyExpensesProjection(activeTransferStorage, monthlyReportStorage, yearMonthFactory);
+        currencyExchangeManager = mock(CurrencyExchangeManager.class);
+        projection = new MonthlyExpensesProjection(activeTransferStorage, monthlyReportStorage, yearMonthFactory, currencyExchangeManager);
 
         transactionMonth = mock(YearMonth.class);
         when(yearMonthFactory.from(TransactionUtils.TRANSACTION_DATE)).thenReturn(transactionMonth);
+        when(currencyExchangeManager.convert(TransactionUtils.TRANSACTION_AMOUNT, CurrencyUtils.currencyCode(), CurrencyCode.USD))
+                .thenReturn(TransactionUtils.ANOTHER_TRANSACTION_AMOUNT);
     }
 
     @Test
@@ -62,7 +69,7 @@ class MonthlyExpensesProjectionTest {
         projection.on(TransactionUtils.moneyDepositedIntoAccountEvent().build(), REGULAR_ACCOUNT_AGGREGATE_TYPE);
 
         MonthlyReport expectedReport = MonthlyReportUtils.monthlyReport()
-                .incoming(MonthlyReportUtils.INCOMING.add(TransactionUtils.TRANSACTION_AMOUNT))
+                .incoming(MonthlyReportUtils.INCOMING.add(TransactionUtils.ANOTHER_TRANSACTION_AMOUNT))
                 .build();
         verify(monthlyReportStorage).save(expectedReport);
     }
@@ -76,7 +83,7 @@ class MonthlyExpensesProjectionTest {
 
         projection.on(TransactionUtils.moneyDepositedIntoAccountEvent().build(), REGULAR_ACCOUNT_AGGREGATE_TYPE);
 
-        MonthlyReport expectedReport = MonthlyReport.builder().month(transactionMonth).incoming(TransactionUtils.TRANSACTION_AMOUNT).build();
+        MonthlyReport expectedReport = MonthlyReport.builder().month(transactionMonth).incoming(TransactionUtils.ANOTHER_TRANSACTION_AMOUNT).build();
         verify(monthlyReportStorage).save(expectedReport);
     }
 
@@ -133,7 +140,7 @@ class MonthlyExpensesProjectionTest {
         projection.on(TransactionUtils.moneyWithdrewFromAccountEvent().build(), REGULAR_ACCOUNT_AGGREGATE_TYPE);
 
         MonthlyReport expectedReport = MonthlyReportUtils.monthlyReport()
-                .expenses(MonthlyReportUtils.EXPENSES.add(TransactionUtils.TRANSACTION_AMOUNT))
+                .expenses(MonthlyReportUtils.EXPENSES.add(TransactionUtils.ANOTHER_TRANSACTION_AMOUNT))
                 .build();
         verify(monthlyReportStorage).save(expectedReport);
     }
@@ -147,7 +154,7 @@ class MonthlyExpensesProjectionTest {
 
         projection.on(TransactionUtils.moneyWithdrewFromAccountEvent().build(), REGULAR_ACCOUNT_AGGREGATE_TYPE);
 
-        MonthlyReport expectedReport = MonthlyReport.builder().month(transactionMonth).expenses(TransactionUtils.TRANSACTION_AMOUNT).build();
+        MonthlyReport expectedReport = MonthlyReport.builder().month(transactionMonth).expenses(TransactionUtils.ANOTHER_TRANSACTION_AMOUNT).build();
         verify(monthlyReportStorage).save(expectedReport);
     }
 
