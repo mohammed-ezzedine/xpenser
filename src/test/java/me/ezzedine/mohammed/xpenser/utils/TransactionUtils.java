@@ -29,7 +29,7 @@ public class TransactionUtils {
 
     public static MoneyDepositedInAccountEvent.MoneyDepositedInAccountEventBuilder moneyDepositedIntoAccountEvent() {
         return MoneyDepositedInAccountEvent.builder().transactionId(TRANSACTION_ID).accountId(AccountUtils.ACCOUNT_ID)
-                .amount(TRANSACTION_AMOUNT).note(TRANSACTION_NOTE).timestamp(TRANSACTION_DATE);
+                .amount(TRANSACTION_AMOUNT).note(TRANSACTION_NOTE).currency(CurrencyUtils.currencyCode()).timestamp(TRANSACTION_DATE);
     }
 
     public static WithdrawMoneyCommand.WithdrawMoneyCommandBuilder withdrawMoneyCommand() {

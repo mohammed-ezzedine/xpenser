@@ -48,6 +48,7 @@ public class AccountAggregate {
                 .transactionId(command.transactionId())
                 .accountId(command.accountId())
                 .amount(amount)
+                .currency(budget.getCurrency())
                 .note(command.note())
                 .timestamp(command.timestamp())
                 .build();
