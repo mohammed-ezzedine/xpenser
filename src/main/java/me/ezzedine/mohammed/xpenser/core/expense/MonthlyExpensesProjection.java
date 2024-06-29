@@ -14,6 +14,8 @@ import org.axonframework.messaging.annotation.AggregateType;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
+
 @Service
 @RequiredArgsConstructor
 public class MonthlyExpensesProjection {
@@ -42,7 +44,7 @@ public class MonthlyExpensesProjection {
                     }
 
                     return monthlyReportStorage.fetch(yearMonthFactory.from(event.timestamp()))
-                            .defaultIfEmpty(MonthlyReport.builder().month(yearMonthFactory.from(event.timestamp())).build())
+                            .defaultIfEmpty(MonthlyReport.builder().month(yearMonthFactory.from(event.timestamp())).target(BigDecimal.valueOf(1500)).build())
                             .map(report -> report.addIncome(currencyExchangeManager.convert(event.amount(), event.currency(), CurrencyCode.USD)))
                             .flatMap(monthlyReportStorage::save);
                 }
@@ -59,7 +61,7 @@ public class MonthlyExpensesProjection {
         activeTransferStorage.exists(event.transactionId())
             .filter(exists -> !exists)
             .flatMap(exists -> monthlyReportStorage.fetch(yearMonthFactory.from(event.timestamp()))
-                    .defaultIfEmpty(MonthlyReport.builder().month(yearMonthFactory.from(event.timestamp())).build()))
+                    .defaultIfEmpty(MonthlyReport.builder().month(yearMonthFactory.from(event.timestamp())).target(BigDecimal.valueOf(1500)).build()))
             .map(report -> report.addExpense(currencyExchangeManager.convert(event.amount(), event.currency(), CurrencyCode.USD)))
             .flatMap(monthlyReportStorage::save)
             .block();

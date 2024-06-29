@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.UUID;
 
@@ -83,7 +84,7 @@ class MonthlyExpensesProjectionTest {
 
         projection.on(TransactionUtils.moneyDepositedIntoAccountEvent().build(), REGULAR_ACCOUNT_AGGREGATE_TYPE);
 
-        MonthlyReport expectedReport = MonthlyReport.builder().month(transactionMonth).incoming(TransactionUtils.ANOTHER_TRANSACTION_AMOUNT).build();
+        MonthlyReport expectedReport = MonthlyReport.builder().month(transactionMonth).incoming(TransactionUtils.ANOTHER_TRANSACTION_AMOUNT).target(BigDecimal.valueOf(1500)).build();
         verify(monthlyReportStorage).save(expectedReport);
     }
 
@@ -154,7 +155,7 @@ class MonthlyExpensesProjectionTest {
 
         projection.on(TransactionUtils.moneyWithdrewFromAccountEvent().build(), REGULAR_ACCOUNT_AGGREGATE_TYPE);
 
-        MonthlyReport expectedReport = MonthlyReport.builder().month(transactionMonth).expenses(TransactionUtils.ANOTHER_TRANSACTION_AMOUNT).build();
+        MonthlyReport expectedReport = MonthlyReport.builder().month(transactionMonth).expenses(TransactionUtils.ANOTHER_TRANSACTION_AMOUNT).target(BigDecimal.valueOf(1500)).build();
         verify(monthlyReportStorage).save(expectedReport);
     }
 
