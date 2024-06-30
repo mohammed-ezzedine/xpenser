@@ -1,6 +1,5 @@
 package me.ezzedine.mohammed.xpenser.api.expense;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.ezzedine.mohammed.xpenser.api.account.ResourceUtils;
 import me.ezzedine.mohammed.xpenser.api.expense.category.ExpenseCategoryApiMapperImpl;
 import me.ezzedine.mohammed.xpenser.api.serialization.SerializationConfiguration;
@@ -9,6 +8,7 @@ import me.ezzedine.mohammed.xpenser.core.expense.MonthlyReport;
 import me.ezzedine.mohammed.xpenser.core.expense.MonthlyReportStorage;
 import me.ezzedine.mohammed.xpenser.core.expense.category.ExpenseCategoryService;
 import me.ezzedine.mohammed.xpenser.core.expense.category.report.ExpenseCategoryMonthlyReport;
+import me.ezzedine.mohammed.xpenser.core.expense.category.report.FetchMonthlyCategoryExpensesReportByQuery;
 import me.ezzedine.mohammed.xpenser.core.expense.category.report.FetchMonthlyExpensesReportByCategoriesQuery;
 import me.ezzedine.mohammed.xpenser.utils.ExpenseCategoryUtils;
 import me.ezzedine.mohammed.xpenser.utils.MonthlyReportUtils;
@@ -50,9 +50,6 @@ class MonthlyReportControllerIntegrationTest {
 
     @MockBean
     private ExpenseCategoryService expenseCategoryService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Test
     @DisplayName("it should return the correct report when asked about a specific month")
@@ -117,6 +114,23 @@ class MonthlyReportControllerIntegrationTest {
                         .replace("{CATEGORY_ID}", ExpenseCategoryUtils.EXPENSE_CATEGORY_ID)
                         .replace("{CATEGORY_NAME}", ExpenseCategoryUtils.EXPENSE_CATEGORY_NAME)
                         .replace("{CATEGORY_ICON}", ExpenseCategoryUtils.EXPENSE_CATEGORY_ICON)
+                        .replace("\"{CATEGORY_AMOUNT}\"", ExpenseCategoryUtils.REPORT_AMOUNT.toString())
+                );
+    }
+
+    @Test
+    @DisplayName("it should return the correct category monthly expenses")
+    void it_should_return_the_correct_category_monthly_expenses() {
+        when(queryGateway.streamingQuery(new FetchMonthlyCategoryExpensesReportByQuery(ExpenseCategoryUtils.EXPENSE_CATEGORY_ID), ExpenseCategoryMonthlyReport.class))
+                .thenReturn(Flux.just(ExpenseCategoryUtils.monthlyReport().build()));
+
+        client.get()
+                .uri("/expenses/reports/categories/{categoryId}", ExpenseCategoryUtils.EXPENSE_CATEGORY_ID)
+                .exchange()
+                .expectBody()
+                .json(ResourceUtils.resourceAsString("expenses/report/api/monthly_category_report.json")
+                        .replace("{MONTH}", ExpenseCategoryUtils.REPORT_MONTH.toString())
+                        .replace("{CATEGORY_ID}", ExpenseCategoryUtils.EXPENSE_CATEGORY_ID)
                         .replace("\"{CATEGORY_AMOUNT}\"", ExpenseCategoryUtils.REPORT_AMOUNT.toString())
                 );
     }

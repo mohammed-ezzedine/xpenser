@@ -3,6 +3,7 @@ package me.ezzedine.mohammed.xpenser.infra.persistence.expense.category.report;
 import lombok.RequiredArgsConstructor;
 import me.ezzedine.mohammed.xpenser.core.expense.category.report.ExpenseCategoryMonthlyReport;
 import me.ezzedine.mohammed.xpenser.core.expense.category.report.ExpenseCategoryMonthlyReportStorage;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -38,6 +39,7 @@ public class ExpenseCategoryMonthlyReportMongoStorage implements ExpenseCategory
     public Flux<ExpenseCategoryMonthlyReport> fetchByCategory(String category) {
         Query query = new Query();
         query.addCriteria(Criteria.where("id.category").is(category));
+        query.with(Sort.by("id.month").ascending());
         Flux<ExpenseCategoryMonthlyReportDocument> flux = mongoTemplate.find(query, ExpenseCategoryMonthlyReportDocument.class);
         return flux.map(mapper::map);
     }

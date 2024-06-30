@@ -1,0 +1,7 @@
+[
+  {
+    "month": "{MONTH}",
+    "category": "{CATEGORY_ID}",
+    "amount": "{CATEGORY_AMOUNT}"
+  }
+]

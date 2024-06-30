@@ -111,10 +111,15 @@ class ExpenseCategoryMonthlyReportMongoStorageIntegrationTest extends DatabaseIn
         @DisplayName("it should return all the entities with a matching category")
         void it_should_return_all_the_entities_with_a_matching_category() {
             repository.save(ExpenseCategoryUtils.monthlyReportDocument().build()).block();
-            repository.save(ExpenseCategoryUtils.anotherMonthlyReportDocument().build()).block();
+            repository.save(ExpenseCategoryUtils.anotherMonthlyReportDocument()
+                    .id(ExpenseCategoryUtils.anotherMonthlyReportDocumentId()
+                            .category(ExpenseCategoryUtils.EXPENSE_CATEGORY_ID)
+                            .build())
+                    .build()).block();
 
             Flux<ExpenseCategoryMonthlyReport> flux = storage.fetchByCategory(ExpenseCategoryUtils.EXPENSE_CATEGORY_ID);
             StepVerifier.create(flux)
+                    .expectNext(ExpenseCategoryUtils.anotherMonthlyReport().category(ExpenseCategoryUtils.EXPENSE_CATEGORY_ID).build())
                     .expectNext(ExpenseCategoryUtils.monthlyReport().build())
                     .verifyComplete();
         }

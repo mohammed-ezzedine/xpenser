@@ -1,17 +1,15 @@
 package me.ezzedine.mohammed.xpenser.api.expense;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import me.ezzedine.mohammed.xpenser.api.expense.category.ExpenseCategoryApiMapper;
 import me.ezzedine.mohammed.xpenser.core.expense.MonthlyReportStorage;
 import me.ezzedine.mohammed.xpenser.core.expense.category.ExpenseCategoryService;
 import me.ezzedine.mohammed.xpenser.core.expense.category.report.ExpenseCategoryMonthlyReport;
+import me.ezzedine.mohammed.xpenser.core.expense.category.report.FetchMonthlyCategoryExpensesReportByQuery;
 import me.ezzedine.mohammed.xpenser.core.expense.category.report.FetchMonthlyExpensesReportByCategoriesQuery;
 import org.axonframework.extensions.reactor.queryhandling.gateway.ReactorQueryGateway;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.YearMonth;
@@ -27,7 +25,6 @@ public class MonthlyReportController {
     private final ReactorQueryGateway queryGateway;
     private final ExpenseCategoryApiMapper categoryApiMapper;
     private final ExpenseCategoryService expenseCategoryService;
-    private final ObjectMapper objectMapper;
 
     @GetMapping
     public Mono<MonthlyReportApiResponse> fetchMonthlyReport(@RequestParam YearMonth month) {
@@ -63,5 +60,10 @@ public class MonthlyReportController {
                 .map(categoryAmountTuple -> MonthlyCategoriesReportApiResponse.CategoryExpenseReport.builder().category(categoryAmountTuple.getT1()).amount(categoryAmountTuple.getT2()).build())
                 .collectList()
                 .map(categoryReports -> MonthlyCategoriesReportApiResponse.builder().month(yearMonth).categories(categoryReports.stream().sorted(Comparator.comparing(category -> category.category().name())).toList()).build());
+    }
+
+    @GetMapping("categories/{categoryId}")
+    public Flux<ExpenseCategoryMonthlyReport> fetchCategoryMonthlyExpenses(@PathVariable String categoryId) {
+        return queryGateway.streamingQuery(new FetchMonthlyCategoryExpensesReportByQuery(categoryId), ExpenseCategoryMonthlyReport.class);
     }
 }
