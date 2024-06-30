@@ -1,6 +1,9 @@
 package me.ezzedine.mohammed.xpenser.core.expense.category.report;
 
+import me.ezzedine.mohammed.xpenser.core.currency.CurrencyCode;
+import me.ezzedine.mohammed.xpenser.core.currency.exchange.CurrencyExchangeManager;
 import me.ezzedine.mohammed.xpenser.core.expense.YearMonthFactory;
+import me.ezzedine.mohammed.xpenser.utils.CurrencyUtils;
 import me.ezzedine.mohammed.xpenser.utils.ExpenseCategoryUtils;
 import me.ezzedine.mohammed.xpenser.utils.TransactionUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,15 +22,19 @@ class MonthlyCategoryExpensesProjectionTest {
     private ExpenseCategoryMonthlyReportStorage storage;
     private MonthlyCategoryExpensesProjection projection;
     private YearMonthFactory yearMonthFactory;
+    private CurrencyExchangeManager currencyExchangeManager;
 
     @BeforeEach
     void setUp() {
         storage = mock(ExpenseCategoryMonthlyReportStorage.class);
         yearMonthFactory = mock(YearMonthFactory.class);
-        projection = new MonthlyCategoryExpensesProjection(storage, yearMonthFactory);
+        currencyExchangeManager = mock(CurrencyExchangeManager.class);
+        projection = new MonthlyCategoryExpensesProjection(storage, yearMonthFactory, currencyExchangeManager);
 
         when(yearMonthFactory.from(TransactionUtils.TRANSACTION_DATE)).thenReturn(ExpenseCategoryUtils.REPORT_MONTH);
         when(storage.save(any())).thenReturn(Mono.empty());
+        when(currencyExchangeManager.convert(TransactionUtils.TRANSACTION_AMOUNT, CurrencyUtils.currencyCode(), CurrencyCode.USD))
+                .thenReturn(TransactionUtils.ANOTHER_TRANSACTION_AMOUNT);
     }
 
     @Test
@@ -39,7 +46,7 @@ class MonthlyCategoryExpensesProjectionTest {
         projection.handle(TransactionUtils.moneyWithdrewFromAccountEvent().build(), "RegularAccountAggregate");
 
         ExpenseCategoryMonthlyReport expectedReport = ExpenseCategoryUtils.monthlyReport()
-                .amount(ExpenseCategoryUtils.REPORT_AMOUNT.add(TransactionUtils.TRANSACTION_AMOUNT)).build();
+                .amount(ExpenseCategoryUtils.REPORT_AMOUNT.add(TransactionUtils.ANOTHER_TRANSACTION_AMOUNT)).build();
         verify(storage).save(expectedReport);
     }
 
@@ -52,7 +59,7 @@ class MonthlyCategoryExpensesProjectionTest {
         projection.handle(TransactionUtils.moneyWithdrewFromAccountEvent().build(), "RegularAccountAggregate");
 
         ExpenseCategoryMonthlyReport expectedReport = ExpenseCategoryUtils.monthlyReport()
-                .amount(TransactionUtils.TRANSACTION_AMOUNT).build();
+                .amount(TransactionUtils.ANOTHER_TRANSACTION_AMOUNT).build();
         verify(storage).save(expectedReport);
     }
 

@@ -3,6 +3,8 @@ package me.ezzedine.mohammed.xpenser.core.expense.category.report;
 import lombok.RequiredArgsConstructor;
 import me.ezzedine.mohammed.xpenser.core.account.RegularAccountAggregate;
 import me.ezzedine.mohammed.xpenser.core.account.transactions.MoneyWithdrewFromAccountEvent;
+import me.ezzedine.mohammed.xpenser.core.currency.CurrencyCode;
+import me.ezzedine.mohammed.xpenser.core.currency.exchange.CurrencyExchangeManager;
 import me.ezzedine.mohammed.xpenser.core.expense.YearMonthFactory;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.messaging.annotation.AggregateType;
@@ -19,6 +21,7 @@ public class MonthlyCategoryExpensesProjection {
 
     private final ExpenseCategoryMonthlyReportStorage storage;
     private final YearMonthFactory yearMonthFactory;
+    private final CurrencyExchangeManager currencyExchangeManager;
 
     @EventHandler
     public void handle(MoneyWithdrewFromAccountEvent event, @AggregateType String type) {
@@ -28,7 +31,7 @@ public class MonthlyCategoryExpensesProjection {
 
         storage.fetchByCategoryAndMonth(event.category(), yearMonthFactory.from(event.timestamp()))
                 .defaultIfEmpty(ExpenseCategoryMonthlyReport.builder().month(yearMonthFactory.from(event.timestamp())).category(event.category()).amount(BigDecimal.ZERO).build())
-                .map(report -> report.toBuilder().amount(report.amount().add(event.amount())).build())
+                .map(report -> report.toBuilder().amount(report.amount().add(currencyExchangeManager.convert(event.amount(), event.currency(), CurrencyCode.USD))).build())
                 .flatMap(storage::save)
                 .block();
     }
