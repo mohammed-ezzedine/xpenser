@@ -3,6 +3,7 @@ package me.ezzedine.mohammed.xpenser.core.account.transactions.query;
 import me.ezzedine.mohammed.xpenser.core.account.AccountNotFoundException;
 import me.ezzedine.mohammed.xpenser.utils.AccountUtils;
 import me.ezzedine.mohammed.xpenser.utils.BudgetUtils;
+import me.ezzedine.mohammed.xpenser.utils.ExpenseCategoryUtils;
 import me.ezzedine.mohammed.xpenser.utils.TransactionUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -68,7 +69,7 @@ class AccountTransactionsProjectionTest {
                                 TransactionUtils.transactionSummary()
                                         .amount(TransactionUtils.TRANSACTION_AMOUNT.negate())
                                         .balance(BudgetUtils.ANOTHER_BUDGET_AMOUNT.subtract(TransactionUtils.TRANSACTION_AMOUNT))
-                                        .category(TransactionUtils.TRANSACTION_CATEGORY)
+                                        .category(ExpenseCategoryUtils.EXPENSE_CATEGORY_ID)
                                         .build(),
                                 TransactionUtils.anotherTransactionSummary().build()
                         )

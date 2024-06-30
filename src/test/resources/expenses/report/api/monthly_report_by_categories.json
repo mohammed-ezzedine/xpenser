@@ -1,0 +1,13 @@
+{
+  "month": "{MONTH}",
+  "categories": [
+    {
+      "category": {
+        "id": "{CATEGORY_ID}",
+        "name": "{CATEGORY_NAME}",
+        "icon": "{CATEGORY_ICON}"
+      },
+      "amount": "{CATEGORY_AMOUNT}"
+    }
+  ]
+}
