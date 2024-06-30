@@ -1,6 +1,5 @@
 package me.ezzedine.mohammed.xpenser.api.expense;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import me.ezzedine.mohammed.xpenser.api.expense.category.ExpenseCategoryApiMapper;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import java.time.YearMonth;
+import java.util.Comparator;
 
 @RestController
 @RequestMapping("expenses/reports")
@@ -62,13 +62,6 @@ public class MonthlyReportController {
                         .zipWith(Mono.just(categoryMonthlyReport.amount())))
                 .map(categoryAmountTuple -> MonthlyCategoriesReportApiResponse.CategoryExpenseReport.builder().category(categoryAmountTuple.getT1()).amount(categoryAmountTuple.getT2()).build())
                 .collectList()
-                .map(categoryReports -> MonthlyCategoriesReportApiResponse.builder().month(yearMonth).categories(categoryReports).build())
-                .doOnNext(report -> {
-                    try {
-                        System.out.println("report " + objectMapper.writeValueAsString(report));
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+                .map(categoryReports -> MonthlyCategoriesReportApiResponse.builder().month(yearMonth).categories(categoryReports.stream().sorted(Comparator.comparing(category -> category.category().name())).toList()).build());
     }
 }
